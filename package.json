@@ -1,6 +1,6 @@
 {
   "name": "@project-gitgone/docs",
-  "version": "26.2.6",
+  "version": "26.2.7",
   "private": false,
   "author":"Théo Lagache <theo@lagache.dev>",
   "scripts": {
