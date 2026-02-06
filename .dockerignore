@@ -4,6 +4,5 @@ node_modules
 .github
 README.md
 .gitignore
-pnpm-lock.yaml
 Dockerfile
 .dockerignore
