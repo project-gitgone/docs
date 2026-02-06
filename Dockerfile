@@ -6,7 +6,7 @@ RUN corepack enable
 FROM base AS build
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml next.config.mjs source.config.ts ./
 
 RUN pnpm install --frozen-lockfile
 
