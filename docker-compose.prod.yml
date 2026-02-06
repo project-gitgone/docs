@@ -2,21 +2,18 @@ services:
   docs:
     image: ghcr.io/project-gitgone/docs:latest
     restart: always
-    depends_on:
-      db:
-        condition: service_healthy    
     networks:
       - internal
-      - web
+      - traefik_default
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_default"
       - "traefik.http.routers.gitgone-docs.rule=Host(`${DOMAIN:-gitgone.oreades-studio.fr}`)"
       - "traefik.http.routers.gitgone-docs.entrypoints=websecure"
       - "traefik.http.routers.gitgone-docs.tls.certresolver=cloudflare"
-      - "traefik.http.services.gitgone-docs.loadbalancer.server.port=3333"
+      - "traefik.http.services.gitgone-docs.loadbalancer.server.port=3000"
 
 networks:
   internal:
-  web:
+  traefik_default:
     external: true
