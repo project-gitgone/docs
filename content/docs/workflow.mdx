@@ -1,0 +1,37 @@
+---
+title: Development Workflow
+description: Best practices for using GitGone in a collaborative environment.
+---
+
+# Development Workflow
+
+Managing secrets in a team can be chaotic. GitGone streamlines this by treating secrets with the same rigor as source code, but without the security risk of committing them to Git.
+
+## The Loop
+
+The standard development loop with GitGone mirrors your git workflow:
+
+### 1. Pull (Sync)
+Before starting work, ensure you have the latest config.
+```bash
+gitgone pull
+```
+This fetches the latest encrypted snapshot from the server and injects it into your local environment or creates a local `.env` file (if configured).
+
+### 2. Modify
+Need to add a new API key? Just add it to your local `.env` file as you normally would.
+```
+STRIPE_KEY=sk_test_12345
+```
+GitGone doesn't force you to use CLI commands for every single variable change; it respects your existing development habits.
+
+### 3. Push (Share)
+When your feature works and you're ready to share the config with the team:
+```bash
+gitgone push
+```
+This creates a new immutable version of the secrets and uploads it. Your teammates can now `pull` it.
+
+## Environments
+
+GitGone supports multiple environments (e.g., `development`, `staging`, `production`) within a single project.

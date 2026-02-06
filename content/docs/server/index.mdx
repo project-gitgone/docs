@@ -1,0 +1,31 @@
+---
+title: Introduction
+description: Learn how GitGone helps you protect your team's secrets.
+---
+
+# Welcome to GitGone Server 👋
+
+You've decided to take control of your configuration secrets—like API keys and database passwords—and that's a fantastic move! 
+
+The GitGone server is the heart of your very own secret management system. It’s a dedicated API server designed to be the single source of truth for your team's encrypted configurations.
+
+## What is GitGone Server?
+
+Think of it as a **secure digital vault** for your team. The server acts as a trusted guardian:
+- **Encrypted Storage**: It holds onto your data but never sees it in plain text.
+- **Access Control**: It manages who can see or edit secrets for specific projects.
+- **Version History**: It keeps track of every change, allowing you to roll back instantly if something goes wrong.
+
+### Why self-host?
+
+- **Total Privacy**: Your secrets never leave your infrastructure.
+- **No Third-Party Risk**: You aren't dependent on a SaaS provider's security or pricing.
+- **Control**: You own the database, the logs, and the access rules.
+
+## Architecture
+
+GitGone relies on a **Zero-Trust** architecture where the server never has access to the decryption keys. All encryption happens client-side (in the CLI).
+
+For a deep dive into the cryptography and security model, check out the [Architecture & Security](/docs/architecture) page.
+
+Ready to deploy? Let's [set up your instance!](./setup)

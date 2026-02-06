@@ -1,0 +1,55 @@
+---
+title: Core Concepts
+description: A simple guide to how GitGone organizes your secrets.
+---
+
+# Core Concepts
+
+To make the most of GitGone, it helps to understand how your data is organized. Here is the hierarchy:
+
+<Files>
+  <Folder name="Team (Organization)" defaultOpen>
+    <Folder name="Team Members">
+      <File name="Admin (SuperAdmin)" />
+      <File name="Member" />
+    </Folder>
+    <Folder name="Project (Your App)" defaultOpen>
+      <Folder name="development">
+        <File name="Snapshot v1" />
+        <File name="Snapshot v2" />
+      </Folder>
+      <Folder name="production">
+        <File name="Snapshot v1" />
+      </Folder>
+    </Folder>
+  </Folder>
+</Files>
+
+<Tabs items={['👥 Teams', '📁 Projects', '🔐 Secrets', '🏗️ Environments']}>
+  <Tab value="👥 Teams">
+    A **Team** (or Workspace) is your main organizational unit. Usually, a team represents your entire company or a specific group of developers.
+
+    - You can be a member of multiple teams.
+    - Each team has its own members and its own projects.
+    - **Admins** can manage team membership and system-wide settings.
+  </Tab>
+  <Tab value="📁 Projects">
+    Inside your team, you'll create **Projects**. A project usually corresponds to a single application, a microservice, or a specific infrastructure component.
+    
+    - Secrets are scoped to a project.
+    - Access is managed at the project level.
+  </Tab>
+  <Tab value="🔐 Secrets">
+    A **Secret** is a versioned collection of environment variables (like in a `.env` file). 
+    
+    <Callout type="info">
+      GitGone doesn't just store "keys"; it stores **Snapshots**. Every time you push, a new version is created, allowing you to track history and roll back if needed.
+    </Callout>
+  </Tab>
+  <Tab value="🏗️ Environments">
+    Projects have different **Environments** (e.g., `development`, `staging`, `production`). 
+    
+    - You can have different secret values for each environment.
+    - GitGone ensures your app only pulls the values for the environment you specify.
+  </Tab>
+</Tabs>

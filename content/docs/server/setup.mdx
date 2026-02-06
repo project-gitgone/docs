@@ -1,0 +1,125 @@
+---
+title: Getting Started
+description: How to get your GitGone server up and running.
+---
+
+# Self-Host GitGone
+
+Ready to take control of your secrets? Setting up your own GitGone server is the best way to ensure your data stays private and secure. We've made it as simple as possible using Docker.
+
+<Callout type="info">
+  **Why Docker?** It packages everything GitGone needs (database, server, etc.) into a single, easy-to-run container. No manual database setup required!
+</Callout>
+
+## Prerequisites
+
+Before you start, make sure you have:
+- **Docker** installed on your machine.
+- A **Domain Name** (if you want to access it from the web).
+- 5 minutes of your time!
+
+## Quick Start (The "One-File" Setup)
+
+Everything you need to run GitGone is contained in a single configuration file called `docker-compose.yml`.
+
+<Steps>
+### Create a new folder
+Keep things organized by creating a dedicated folder for GitGone:
+```bash
+mkdir gitgone && cd gitgone
+```
+
+### Create the configuration file
+Create a file named `docker-compose.yml` and paste the following content:
+
+```yaml
+services:
+  db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: gitgone
+      POSTGRES_PASSWORD: your_strong_password
+      POSTGRES_DB: gitgone
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gitgone -d gitgone"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    image: ghcr.io/project-gitgone/server:latest
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3333:3333"
+    environment:
+      - NODE_ENV=production
+      - PORT=3333
+      - HOST=0.0.0.0
+      - APP_KEY=ChangeMeWithA32CharRandomString!
+      - APP_URL=http://localhost:3333
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=gitgone
+      - DB_PASSWORD=your_strong_password
+      - DB_DATABASE=gitgone
+
+volumes:
+  pgdata:
+```
+
+<Callout type="warn">
+  Don't forget to change `your_strong_password` and `APP_KEY` to something secure!
+</Callout>
+
+### Launch your server
+Run this command in your terminal:
+```bash
+docker-compose up -d
+```
+
+### Access your Server
+Your server is now running in the background. You can check if it's alive by visiting:
+[http://localhost:3333](http://localhost:3333)
+
+You should see a JSON response confirming the server is active.
+
+### Initial Admin Setup
+Since GitGone is a CLI-first tool, there is no web dashboard. You need to use the CLI to initialize your administrator account.
+
+On your local machine (where you installed the CLI), run:
+```bash
+gitgone admin setup
+```
+
+Follow the prompts to:
+1. Enter your server URL (`http://localhost:3333`).
+2. Create your administrator account (Email, Password, Name).
+3. Generate your master encryption keys.
+
+Once done, you'll be automatically logged in and ready to go!
+</Steps>
+
+## Common Questions
+
+<Accordions>
+<Accordion title="How do I update my server?">
+  Updating is easy! Just run:
+  ```bash
+  docker-compose pull && docker-compose up -d
+  ```
+</Accordion>
+<Accordion title="Where is my data stored?">
+  Your data is stored in a Docker Volume named `pgdata`. It persists even if you stop or delete the containers.
+</Accordion>
+<Accordion title="How do I use a custom domain?">
+  Change the `APP_URL` environment variable to your domain (e.g., `https://secrets.example.com`) and set up a reverse proxy like Nginx or Traefik.
+</Accordion>
+</Accordions>
+
+Next step: [Install the CLI](../cli/setup) to start pushing secrets!

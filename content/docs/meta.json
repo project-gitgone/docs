@@ -1,0 +1,13 @@
+{
+  "title": "Documentation",
+  "icon": "BookOpen",
+  "root": true,
+  "defaultOpen": true,
+  "pages": [
+    "index",
+    "---Getting Started---",
+    "architecture",
+    "workflow",
+    "comparison"
+  ]
+}

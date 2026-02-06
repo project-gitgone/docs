@@ -1,0 +1,129 @@
+---
+title: CLI Commands
+description: A complete reference for all GitGone CLI commands.
+---
+
+# Command Reference
+
+The GitGone CLI is organized into logical groups to help you manage your secrets, teams, and projects efficiently.
+
+## Authentication & Config
+
+<Accordions>
+<Accordion title="gitgone login">
+  Authenticate your CLI with your GitGone server. You will be prompted for your email and password directly in your terminal.
+</Accordion>
+<Accordion title="gitgone config">
+  Manage your local configuration (like the server URL).
+  - `gitgone config set <key> <value>`
+  - `gitgone config get <key>`
+  - `gitgone config list`
+</Accordion>
+</Accordions>
+
+## Working with Secrets
+
+These are the commands you'll use most frequently during development.
+
+<Accordions>
+<Accordion title="gitgone init">
+  Initialize GitGone in your current project directory. It links your local folder to a specific project on the server.
+</Accordion>
+<Accordion title="gitgone push">
+  Encrypt and upload your local `.env` file to the server for a specific environment.
+  ```bash
+  gitgone push
+  ```
+</Accordion>
+<Accordion title="gitgone pull">
+  Fetch and decrypt the latest secrets from the server into your local `.env` file.
+  ```bash
+  gitgone pull
+  ```
+</Accordion>
+<Accordion title="gitgone run">
+  Inject secrets directly into your application's memory without touching the disk. 
+  **Recommended for security.**
+  ```bash
+  gitgone run -- npm start
+  ```
+</Accordion>
+</Accordions>
+
+## History & Rollbacks
+
+<Accordions>
+<Accordion title="gitgone history">
+  List the version history of secrets for the current project and environment.
+</Accordion>
+<Accordion title="gitgone rollback">
+  Revert to a previous version of your secrets instantly.
+</Accordion>
+</Accordions>
+
+## Team Management
+
+Manage your collaboration units.
+
+<Accordions>
+<Accordion title="gitgone team create <name>">
+  Create a new team (organization) on the server.
+</Accordion>
+<Accordion title="gitgone team add-member">
+  Invite a new member to your team by their email address.
+</Accordion>
+<Accordion title="gitgone team list-members">
+  List all members and their roles in a team.
+</Accordion>
+</Accordions>
+
+## Project Management
+
+Manage applications within your teams.
+
+<Accordions>
+<Accordion title="gitgone project create <name>">
+  Create a new project within one of your teams.
+</Accordion>
+<Accordion title="gitgone project set-policy">
+  Configure security rules for the project:
+  - **Standard**: Allows `gitgone pull` to disk.
+  - **Memory-only**: Disables `pull`, forcing the use of `gitgone run` for maximum security.
+</Accordion>
+</Accordions>
+
+## Key Management
+
+GitGone uses end-to-end encryption. These commands help manage the keys that protect your data.
+
+<Accordions>
+<Accordion title="gitgone keys share">
+  When a new member joins a team, they don't have the project keys yet. An existing member with access must run this command to securely share the project key with them.
+  
+  <Callout type="info">
+    This process is fully encrypted. Your CLI will fetch the new member's public key and encrypt the project key specifically for them.
+  </Callout>
+</Accordion>
+</Accordions>
+
+## Administration
+
+Commands reserved for server administrators.
+
+<Accordions>
+<Accordion title="gitgone admin setup">
+  The very first command to run after setting up a new server. It creates the SuperAdmin account and generates the master keys.
+</Accordion>
+<Accordion title="gitgone admin users create">
+  Create new users on the server manually.
+</Accordion>
+</Accordions>
+
+---
+
+<Callout type="info">
+  You can always use the `--help` flag with any command to see more details and options:
+  ```bash
+  gitgone team --help
+  ```
+</Callout>

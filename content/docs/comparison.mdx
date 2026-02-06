@@ -1,0 +1,31 @@
+---
+title: Feature Comparison
+description: How GitGone compares to other secret management solutions like Dotenv Vault.
+---
+
+# Feature Comparison
+
+While there are many ways to manage environment variables, GitGone is specifically designed for teams who prioritize **security**, **privacy**, and **developer experience**.
+
+## GitGone vs. Dotenv Vault
+
+| Feature | GitGone | Dotenv Vault |
+| :--- | :--- | :--- |
+| **End-to-End Encryption** | ✅ Yes (Server never sees plain text) | ❌ No (Server manages keys) |
+| **Self-Hosting** | ✅ Yes (Docker / Source) | ❌ No (SaaS only) |
+| **Process Injection** | ✅ Yes (`gitgone run`) | ✅ Yes (`dotenv-vault local run`) |
+| **Version History** | ✅ Yes (Snapshots) | ✅ Yes |
+| **Team Management** | ✅ Built-in | ✅ Built-in |
+| **Access Control** | ✅ Granular (per project/env) | ✅ Project-based |
+| **Data Residency** | ✅ You control where data lives | ❌ Stored on their servers |
+
+## Why GitGone?
+
+### Privacy by Default
+In many other solutions, the service provider manages the encryption keys for you. If their database is compromised, your secrets are at risk. With GitGone, **encryption happens on your machine**. The server only ever sees "blobs" of encrypted data that it cannot decrypt.
+
+### Total Control
+GitGone is fully open-source and self-hostable. You own your data, your logs, and your infrastructure. No more worrying about third-party uptime or security audits of external SaaS providers.
+
+### Built for Modern Devs
+GitGone respects your workflow. It doesn't force you to use a custom dashboard for every minor change. Keep using your favorite editor for `.env` files, and let the CLI handle the secure sync.

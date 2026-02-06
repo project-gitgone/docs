@@ -1,0 +1,27 @@
+---
+title: Introduction
+description: Technical overview of the GitGone Command Line Interface.
+---
+
+# GitGone CLI
+
+The GitGone CLI is the primary tool for managing project secrets during development. It connects your local environment to your GitGone server, allowing for secure synchronization of environment variables across your team.
+
+## Core Utility
+
+The CLI replaces the manual sharing of sensitive configuration files by providing a centralized and encrypted workflow.
+
+- **End-to-End Encryption**: Secrets are encrypted locally before being sent to the server. Learn more about our [Security Architecture](/docs/architecture).
+- **Version Control**: Every change is tracked as a snapshot, allowing you to see history and roll back if necessary.
+- **Process Injection**: The CLI can inject secrets directly into your application process, reducing the reliance on persistent `.env` files.
+
+## Basic Workflow
+
+1. **Server Connection**: Point your CLI to your instance using `config set serverUrl`. *(Skip this if your project already has a `.gitgone` file)*.
+2. **Authentication**: Connect your local machine to your GitGone account using `login`.
+3. **Project Linking**: Use `init` to associate your local directory with a project on the server.
+4. **Synchronization**: Use `push` to share your local changes or `pull` to retrieve updates from your team.
+
+For a more detailed look at the team lifecycle, check out the [Development Workflow](/docs/workflow).
+
+[Continue to Installation](./setup)

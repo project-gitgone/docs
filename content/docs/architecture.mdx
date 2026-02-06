@@ -1,0 +1,33 @@
+---
+title: Architecture & Security
+description: Understand how GitGone protects your secrets with End-to-End Encryption.
+---
+
+# Architecture & Security
+
+GitGone is built on a "trust-no-one" architecture. This means the server is treated as an untrusted storage medium. It stores your data, but it cannot read it.
+
+## The Security Model
+
+The core of GitGone's security is **End-to-End Encryption (E2EE)** using standard cryptographic primitives (AES-GCM for content, RSA/ECC for key exchange).
+
+### 1. Local Encryption
+When you save a secret using the CLI, the following happens on your local machine:
+- The secret values are serialized.
+- A **Project Key** (generated when you init a project) is used to encrypt this payload.
+- Only the *encrypted ciphertext* is sent to the server.
+
+### 2. The Project Key
+The Project Key is the "master key" for a specific project.
+- It is generated locally by the project creator.
+- It is stored in your local keychain/keyring.
+- It is **never** sent to the server in plain text.
+
+### 3. Sharing Access
+To add a team member:
+1. The new member generates a public/private key pair.
+2. They send their public key to the server.
+3. An existing admin fetches the public key.
+4. The admin's CLI encrypts the **Project Key** using the new member's public key.
+5. This encrypted key is uploaded to the server.
+6. The new member downloads it and decrypts the Project Key with their private key.

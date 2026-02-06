@@ -1,0 +1,101 @@
+---
+title: Installation
+description: Get the GitGone CLI onto your machine.
+---
+
+# Install the CLI
+
+The GitGone CLI is the primary way to interact with your secrets. It handles encryption locally, ensuring your raw data never leaves your machine.
+
+<Callout type="info">
+  **Prerequisites:** You need **Node.js (v20 or newer)** installed on your computer.
+</Callout>
+
+## 1. Installation or Quick Run
+
+You can either install the CLI globally for frequent use or run it directly using `npx` without installing anything.
+
+<Tabs items={['pnpm', 'npm', 'yarn', 'npx']}>
+  <Tab value="pnpm">
+    ```bash
+    pnpm add -g @project-gitgone/cli
+    ```
+  </Tab>
+  <Tab value="npm">
+    ```bash
+    npm install -g @project-gitgone/cli
+    ```
+  </Tab>
+  <Tab value="yarn">
+    ```bash
+    yarn global add @project-gitgone/cli
+    ```
+  </Tab>
+  <Tab value="npx">
+    If you don't want to install the CLI globally, you can prefix any command with `npx`:
+    ```bash
+    npx @project-gitgone/cli <command>
+    ```
+  </Tab>
+</Tabs>
+
+## 2. Connect to your Server
+
+Before logging in, the CLI needs to know where your GitGone server is located. You can set this globally:
+
+```bash
+gitgone config set serverUrl https://your-gitgone-server.com
+```
+
+<Callout type="info">
+  **Already have a `.gitgone` file?** If your project already contains a `.gitgone` configuration file (e.g. you just cloned a repo already using GitGone), you can skip this step. The CLI will automatically use the `serverUrl` defined in that file for all commands within this directory.
+</Callout>
+
+<Callout type="info">
+  If you are a server administrator, running `gitgone admin setup` will also configure your `serverUrl` automatically.
+</Callout>
+
+## 3. Login
+
+Once the URL is set, authenticate your account:
+
+```bash
+gitgone login
+```
+
+The CLI will ask for your **Email** and **Password** directly in your terminal. This will securely fetch and store your encrypted private vault.
+
+## 4. Project Initialization
+
+To start using GitGone in a specific project, navigate to your project folder and run:
+
+```bash
+gitgone init
+```
+
+This interactive command will help you:
+- Create a new project on the server OR link an existing one.
+- Generate and share the necessary encryption keys.
+- Create a local `.gitgone` file to store project-specific settings.
+
+---
+
+## Troubleshooting
+
+<Accordions>
+<Accordion title="Command not found: gitgone">
+  Make sure your global bin directory is in your system's PATH. For `pnpm`, you might need to run `pnpm setup`.
+</Accordion>
+<Accordion title="Connection Refused">
+  Verify that your `serverUrl` is correct and that the server is reachable (no VPN or firewall blocking the connection).
+</Accordion>
+<Accordion title="Verification">
+  To check your current version and configuration:
+  ```bash
+  gitgone --version
+  gitgone config get
+  ```
+</Accordion>
+</Accordions>
+
+Ready? Let's explore the [Essential Commands](./commands).
