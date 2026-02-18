@@ -1,0 +1,85 @@
+---
+title: "@project-gitgone/node"
+description: Node.js client library for GitGone.
+---
+
+The `@project-gitgone/node` library provides a simple way to fetch and decrypt secrets from a GitGone server in Node.js applications.
+
+## Installation
+
+<Tabs items={['pnpm', 'npm', 'yarn']}>
+  <Tab value="pnpm">
+    ```bash
+    pnpm add @project-gitgone/node
+    ```
+  </Tab>
+  <Tab value="npm">
+    ```bash
+    npm install @project-gitgone/node
+    ```
+  </Tab>
+  <Tab value="yarn">
+    ```bash
+    yarn add @project-gitgone/node
+    ```
+  </Tab>
+</Tabs>
+
+## Usage
+
+The library is designed to be as simple as possible. It fetches your project secrets, decrypts them using your project token, and can automatically populate `process.env`.
+
+### Basic Setup
+
+Call `gitgone.config()` at the entry point of your application:
+
+```ts
+import { gitgone } from "@project-gitgone/node";
+
+await gitgone.config({
+  token: "ptok_...",
+  serverUrl: "http://localhost:3333",
+});
+
+console.log(process.env.MY_SECRET);
+```
+
+### Options
+
+The `config()` method accepts an options object:
+
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `token` | `string` | `process.env.GITGONE_TOKEN` | Your GitGone project token. |
+| `serverUrl` | `string` | `process.env.GITGONE_SERVER_URL` \|\| `http://localhost:3333` | URL of your GitGone server. |
+| `populateProcessEnv` | `boolean` | `true` | Whether to automatically populate `process.env`. |
+| `override` | `boolean` | `false` | Whether to override existing environment variables. |
+
+### Accessing Secrets Programmatically
+
+You can access secrets directly from the `gitgone` instance:
+
+```ts
+import { gitgone } from "@project-gitgone/node";
+
+await gitgone.config();
+
+const mySecret = gitgone.get("MY_SECRET");
+const allSecrets = gitgone.parsed;
+```
+
+## How It Works
+
+1. **Authentication**: The library sends your project token to the GitGone server.
+2. **Retrieval**: The server returns an encrypted bundle containing your project secrets and an encrypted project key.
+3. **Decryption**:
+   - The library decrypts the project key using the secret part of your project token.
+   - It then decrypts the secrets bundle using the project key.
+4. **Injection**: If `populateProcessEnv` is enabled, the decrypted secrets are merged into `process.env`.
+
+## Environment Variables
+
+The library can also be configured using environment variables, making it easy to use in different environments without changing your code:
+
+- `GITGONE_TOKEN`: The project token.
+- `GITGONE_SERVER_URL`: The URL of your GitGone server.

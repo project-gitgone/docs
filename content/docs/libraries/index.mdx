@@ -1,0 +1,27 @@
+---
+title: Introduction
+description: Overview of GitGone client libraries.
+---
+
+GitGone provides client libraries to easily integrate secrets management into your applications. These libraries handle the fetching, decryption, and injection of your project secrets from a GitGone server.
+
+Currently, we offer a dedicated library for Node.js, with more to come in the future.
+
+### Available Libraries
+
+- **[@project-gitgone/node](/docs/libraries/node)**: For Node.js applications.
+
+### Key Features
+
+- **Automatic Decryption**: All secrets are fetched encrypted and decrypted locally using your project token.
+- **Process Environment Injection**: Automatically populates `process.env` with your secrets.
+- **Simple API**: Easy-to-use API to access secrets programmatically.
+- **Secure by Design**: Your master key never leaves your server; secrets are only decrypted at runtime in your application.
+
+### Usage with CLI & Server
+
+The client libraries work in tandem with the **[GitGone CLI](/docs/cli)** for local development and the **[GitGone Server](/docs/server)** for secret storage and distribution.
+
+1. **Store** your secrets on the GitGone Server.
+2. **Access** them in your code via the Libraries using a project token.
+3. **Manage** everything using the CLI.

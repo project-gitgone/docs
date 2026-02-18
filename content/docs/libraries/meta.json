@@ -1,0 +1,9 @@
+{
+  "title": "Libraries",
+  "icon": "Library",
+  "root": true,
+  "pages": [
+    "index",
+    "node"
+  ]
+}
