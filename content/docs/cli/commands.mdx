@@ -27,19 +27,26 @@ These are the commands you'll use most frequently during development.
 
 <Accordions>
 <Accordion title="gitgone init">
-  Initialize GitGone in your current project directory. It links your local folder to a specific project on the server.
+  Initialize GitGone in your current project directory. It creates a `.gitgone` configuration file.
+</Accordion>
+<Accordion title="gitgone link">
+  Link your local directory to an existing project on the GitGone server. This is useful when you've cloned a repository that already uses GitGone.
 </Accordion>
 <Accordion title="gitgone push">
   Encrypt and upload your local `.env` file to the server for a specific environment.
   ```bash
   gitgone push
   ```
+  Options:
+  - `-e, --env <environment>`: Target environment (default: "development").
 </Accordion>
 <Accordion title="gitgone pull">
   Fetch and decrypt the latest secrets from the server into your local `.env` file.
   ```bash
   gitgone pull
   ```
+  Options:
+  - `-e, --env <environment>`: Target environment (default: "development").
 </Accordion>
 <Accordion title="gitgone run">
   Inject secrets directly into your application's memory without touching the disk. 
@@ -47,6 +54,8 @@ These are the commands you'll use most frequently during development.
   ```bash
   gitgone run -- npm start
   ```
+  Options:
+  - `-e, --env <environment>`: Target environment (default: "development").
 </Accordion>
 </Accordions>
 
@@ -58,6 +67,32 @@ These are the commands you'll use most frequently during development.
 </Accordion>
 <Accordion title="gitgone rollback">
   Revert to a previous version of your secrets instantly.
+  ```bash
+  gitgone rollback
+  ```
+</Accordion>
+</Accordions>
+
+## Project Tokens
+
+Project tokens allow applications (like those in CI/CD pipelines, or programmatic scripts) to fetch secrets without a user account.
+
+<Accordions>
+<Accordion title="gitgone tokens list">
+  List all active tokens for the current project.
+</Accordion>
+<Accordion title="gitgone tokens create <name>">
+  Generate a new project token. 
+  
+  <Callout type="warn">
+    The token secret is only shown once. Make sure to save it securely!
+  </Callout>
+
+  Options:
+  - `-e, --env <environment>`: The environment this token has access to.
+</Accordion>
+<Accordion title="gitgone tokens delete <id>">
+  Revoke a project token by its ID.
 </Accordion>
 </Accordions>
 
@@ -69,11 +104,14 @@ Manage your collaboration units.
 <Accordion title="gitgone team create <name>">
   Create a new team (organization) on the server.
 </Accordion>
-<Accordion title="gitgone team add-member">
-  Invite a new member to your team by their email address.
+<Accordion title="gitgone team list">
+  List all teams you are a member of.
 </Accordion>
 <Accordion title="gitgone team list-members">
   List all members and their roles in a team.
+</Accordion>
+<Accordion title="gitgone team add-member">
+  Invite a new member to your team by their email address.
 </Accordion>
 </Accordions>
 
@@ -86,7 +124,7 @@ Manage applications within your teams.
   Create a new project within one of your teams.
 </Accordion>
 <Accordion title="gitgone project set-policy">
-  Configure security rules for the project:
+  Configure security rules for the current project:
   - **Standard**: Allows `gitgone pull` to disk.
   - **Memory-only**: Disables `pull`, forcing the use of `gitgone run` for maximum security.
 </Accordion>
@@ -108,14 +146,24 @@ GitGone uses end-to-end encryption. These commands help manage the keys that pro
 
 ## Administration
 
-Commands reserved for server administrators.
+Commands reserved for server administrators (SuperAdmins).
 
 <Accordions>
 <Accordion title="gitgone admin setup">
   The very first command to run after setting up a new server. It creates the SuperAdmin account and generates the master keys.
 </Accordion>
-<Accordion title="gitgone admin users create">
-  Create new users on the server manually.
+
+<Accordion title="gitgone admin users">
+  Manage users globally on the server.
+  - `gitgone admin users list`: List all registered users.
+  - `gitgone admin users create`: Create a new user account with a specific system role.
+</Accordion>
+
+<Accordion title="gitgone admin teams">
+  Manage teams globally on the server.
+  - `gitgone admin teams create <name>`: Create a new team.
+  - `gitgone admin teams list-members`: List members of any team.
+  - `gitgone admin teams add-member`: Add any user to any team.
 </Accordion>
 </Accordions>
 

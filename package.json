@@ -1,8 +1,8 @@
 {
   "name": "@project-gitgone/docs",
-  "version": "26.2.7",
+  "version": "26.2.8",
   "private": false,
-  "author":"Théo Lagache <theo@lagache.dev>",
+  "author": "Théo Lagache <theo@lagache.dev>",
   "scripts": {
     "build": "next build",
     "dev": "next dev",

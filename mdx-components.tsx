@@ -6,7 +6,7 @@ import { Callout } from 'fumadocs-ui/components/callout';
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 import { Card, Cards } from 'fumadocs-ui/components/card';
 import { File, Folder, Files } from 'fumadocs-ui/components/files';
-import { Server, Terminal, Shield, Zap, Info, Settings, Cpu, BookOpen } from 'lucide-react';
+import { Server, Terminal, Shield, Zap, Info, Settings, Cpu, BookOpen, Library } from 'lucide-react';
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
@@ -32,6 +32,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     Settings,
     Cpu,
     BookOpen,
+    Library,
     ...components,
   };
 }

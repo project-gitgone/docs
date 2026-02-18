@@ -90,7 +90,7 @@ Your server is now running in the background. You can check if it's alive by vis
 You should see a JSON response confirming the server is active.
 
 ### Initial Admin Setup
-Since GitGone is a CLI-first tool, there is no web dashboard. You need to use the CLI to initialize your administrator account.
+Since GitGone is a CLI-first tool, there is no web dashboard. You need to use the CLI to initialize your administrator account and link it to your server.
 
 On your local machine (where you installed the CLI), run:
 ```bash
@@ -98,11 +98,11 @@ gitgone admin setup
 ```
 
 Follow the prompts to:
-1. Enter your server URL (`http://localhost:3333`).
-2. Create your administrator account (Email, Password, Name).
-3. Generate your master encryption keys.
+1. **Connect to your server**: Enter your server URL (e.g., `http://localhost:3333`).
+2. **Create your administrator account**: Enter your Email, Password, and Full Name.
+3. **Generate your master encryption keys**: The CLI will automatically generate your asymmetric keys and encrypt your vault with your password.
 
-Once done, you'll be automatically logged in and ready to go!
+Once done, you'll be automatically logged in as a **SuperAdmin** and ready to manage users and teams!
 </Steps>
 
 ## Common Questions
