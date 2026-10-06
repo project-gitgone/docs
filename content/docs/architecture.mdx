@@ -23,7 +23,15 @@ The Project Key is the "master key" for a specific project.
 - It is stored in your local keychain/keyring.
 - It is **never** sent to the server in plain text.
 
-### 3. Sharing Access
+### 3. Your Account Keys
+Each user has an RSA key pair. The private key is stored on the server inside an encrypted vault that only you can open:
+- Your password is stretched locally with **scrypt** into a master key.
+- Two independent keys are derived from it (HKDF-SHA256): an **authentication key**, sent to the server instead of your password, and a **vault key**, which encrypts your private key and never leaves your machine.
+- The server only stores a hash of the authentication key: knowing it does not help to open your vault.
+
+As a consequence, a lost password cannot be recovered. An administrator can only reset the account, which wipes its keys.
+
+### 4. Sharing Access
 To add a team member:
 1. The new member generates a public/private key pair.
 2. They send their public key to the server.
@@ -31,3 +39,11 @@ To add a team member:
 4. The admin's CLI encrypts the **Project Key** using the new member's public key.
 5. This encrypted key is uploaded to the server.
 6. The new member downloads it and decrypts the Project Key with their private key.
+
+The CLI pins each member's key fingerprint the first time it is used (trust on first use), so a server substituting its own public key is detected.
+
+### 5. Snapshot Integrity
+Each encrypted snapshot is bound to its project, environment and version number (authenticated data of AES-GCM). The server cannot serve the secrets of another environment, nor present an old version under a newer number. The CLI also remembers the latest version it has seen and refuses older ones, which prevents silent rollbacks.
+
+### 6. Key Rotation
+When a member leaves a team, they may still know the project keys. Removing them with `gitgone team remove-member` rotates the key of every project of the team: the history is re-encrypted with a new key and shared with the remaining members only. The server checks that no snapshot and no member is left behind, and revokes the project tokens tied to the old key.

@@ -68,6 +68,8 @@ services:
       - DB_USER=gitgone
       - DB_PASSWORD=your_strong_password
       - DB_DATABASE=gitgone
+      - ALLOW_LEGACY_CLIENTS=true
+      - ALLOW_LEGACY_TOKENS=true
 
 volumes:
   pgdata:
@@ -100,7 +102,7 @@ gitgone admin setup
 Follow the prompts to:
 1. **Connect to your server**: Enter your server URL (e.g., `http://localhost:3333`).
 2. **Create your administrator account**: Enter your Email, Password, and Full Name.
-3. **Generate your master encryption keys**: The CLI will automatically generate your asymmetric keys and encrypt your vault with your password.
+3. **Generate your master encryption keys**: The CLI will automatically generate your asymmetric keys and encrypt your vault with a key derived from your password. The password itself is never sent to the server.
 
 Once done, you'll be automatically logged in as a **SuperAdmin** and ready to manage users and teams!
 </Steps>

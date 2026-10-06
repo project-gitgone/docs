@@ -11,7 +11,19 @@ The GitGone CLI is organized into logical groups to help you manage your secrets
 
 <Accordions>
 <Accordion title="gitgone login">
-  Authenticate your CLI with your GitGone server. You will be prompted for your email and password directly in your terminal.
+  Authenticate your CLI with your GitGone server. You will be prompted for your email and password directly in your terminal. Your password never leaves your machine: the CLI derives an authentication key from it.
+
+  Accounts created before this protocol are upgraded automatically on their next login.
+</Accordion>
+<Accordion title="gitgone activate">
+  Activate an account created by an administrator. You enter the activation code you received, choose your password, and your encryption keys are generated on your machine.
+</Accordion>
+<Accordion title="gitgone passwd">
+  Change your password. Your vault is re-encrypted locally and your other sessions are logged out.
+
+  <Callout type="warn">
+    Nobody can recover a lost password, not even an administrator. A reset (`gitgone admin users reset`) gives you a new account key, and team owners will have to share your projects again.
+  </Callout>
 </Accordion>
 <Accordion title="gitgone config">
   Manage your local configuration (like the server URL).
@@ -79,10 +91,10 @@ Project tokens allow applications (like those in CI/CD pipelines, or programmati
 
 <Accordions>
 <Accordion title="gitgone tokens list">
-  List all active tokens for the current project.
+  List all active tokens for the current project. Legacy tokens (created before v2) are flagged and should be recreated.
 </Accordion>
 <Accordion title="gitgone tokens create <name>">
-  Generate a new project token. 
+  Generate a new project token, in the form `v2.<id>.<secret>`. The secret is generated locally and never sent to the server: only a verifier derived from it is.
   
   <Callout type="warn">
     The token secret is only shown once. Make sure to save it securely!
@@ -113,6 +125,9 @@ Manage your collaboration units.
 <Accordion title="gitgone team add-member">
   Invite a new member to your team by their email address.
 </Accordion>
+<Accordion title="gitgone team remove-member">
+  Remove a member from a team you own. Their copies of the project keys are deleted, then the key of every project of the team is rotated, since they may still know the old ones.
+</Accordion>
 </Accordions>
 
 ## Project Management
@@ -126,7 +141,18 @@ Manage applications within your teams.
 <Accordion title="gitgone project set-policy">
   Configure security rules for the current project:
   - **Standard**: Allows `gitgone pull` to disk.
-  - **Memory-only**: Disables `pull`, forcing the use of `gitgone run` for maximum security.
+  - **Memory-only**: Disables `pull`, forcing the use of `gitgone run` so secrets are never written to disk.
+
+  <Callout type="info">
+    This policy is a guardrail for well-behaved clients, not a security boundary: any member who can decrypt the secrets can still write them to disk.
+  </Callout>
+</Accordion>
+<Accordion title="gitgone project rotate-key">
+  Generate a new project key (owners only). The whole secrets history is re-encrypted with it on your machine, and the new key is shared with every current team member.
+
+  <Callout type="warn">
+    Project tokens are tied to the old key: they are revoked and must be recreated with `gitgone tokens create`.
+  </Callout>
 </Accordion>
 </Accordions>
 
@@ -141,6 +167,14 @@ GitGone uses end-to-end encryption. These commands help manage the keys that pro
   <Callout type="info">
     This process is fully encrypted. Your CLI will fetch the new member's public key and encrypt the project key specifically for them.
   </Callout>
+
+  The first time you share with someone, the CLI shows their key fingerprint and asks you to confirm it (compare it with theirs through another channel). The fingerprint is then pinned: if the server ever returns a different key for them, sharing is refused.
+</Accordion>
+<Accordion title="gitgone keys fingerprint">
+  Display your public key fingerprint, so teammates can check it when they share a project with you.
+</Accordion>
+<Accordion title="gitgone keys forget <email>">
+  Forget the pinned fingerprint of a user, after they legitimately got a new key (account reset). Check their new fingerprint with them before sharing again.
 </Accordion>
 </Accordions>
 
@@ -156,7 +190,8 @@ Commands reserved for server administrators (SuperAdmins).
 <Accordion title="gitgone admin users">
   Manage users globally on the server.
   - `gitgone admin users list`: List all registered users.
-  - `gitgone admin users create`: Create a new user account with a specific system role.
+  - `gitgone admin users create`: Invite a new user. It prints a one-time activation code (valid 72h) to send to the user, who then runs `gitgone activate`.
+  - `gitgone admin users reset`: Reset a user who lost their password. Their keys and project access are wiped and a new activation code is issued.
 </Accordion>
 
 <Accordion title="gitgone admin teams">
