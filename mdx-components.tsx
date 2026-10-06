@@ -9,7 +9,6 @@ import {
   BookOpen,
   Cpu,
   Info,
-  Library,
   Server,
   Settings,
   Shield,
@@ -42,7 +41,6 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     Settings,
     Cpu,
     BookOpen,
-    Library,
-    ...components,
+      ...components,
   };
 }

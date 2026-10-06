@@ -1,5 +1,5 @@
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
-import { Home, Library, Server, Terminal } from "lucide-react";
+import { Home, Server, Terminal } from "lucide-react";
 import { baseOptions } from "@/lib/layout.shared";
 import { source } from "@/lib/source";
 
@@ -25,11 +25,6 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
             title: "Server",
             icon: <Server className="h-5 w-5 text-primary" />,
             url: "/docs/server",
-          },
-          {
-            title: "Libraries",
-            icon: <Library className="h-5 w-5 text-primary" />,
-            url: "/docs/libraries",
           },
         ],
       }}
