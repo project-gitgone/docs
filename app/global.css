@@ -3,11 +3,9 @@
 @import "fumadocs-ui/css/preset.css";
 
 @theme {
-  --color-primary: #60A441;
+  --color-primary: #60a441;
   --color-primary-foreground: #ffffff;
 
-  --color-fd-primary: #60A441;
+  --color-fd-primary: #60a441;
   --color-fd-primary-foreground: #ffffff;
 }
-
-

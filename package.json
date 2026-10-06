@@ -1,16 +1,19 @@
 {
   "name": "@project-gitgone/docs",
   "version": "26.2.8",
-  "private": false,
+  "private": true,
   "author": "Théo Lagache <theo@lagache.dev>",
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
-    "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
     "postinstall": "fumadocs-mdx",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "changeset": "changeset",
+    "version": "changeset version && pnpm install --lockfile-only",
+    "release": "changeset tag",
+    "typecheck": "fumadocs-mdx && next typegen && tsc --noEmit"
   },
   "dependencies": {
     "fumadocs-core": "16.5.0",
@@ -23,6 +26,9 @@
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.3.13",
+    "@changesets/changelog-github": "~0.5.2",
+    "@changesets/cli": "^3.0.3",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/mdx": "^2.0.13",
     "@types/node": "^25.1.0",
@@ -31,7 +37,6 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
-    "@biomejs/biome": "^2.3.13",
     "vite": "^7.3.1"
   },
   "packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264"

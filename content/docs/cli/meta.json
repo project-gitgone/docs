@@ -2,9 +2,5 @@
   "title": "CLI",
   "icon": "Terminal",
   "root": true,
-  "pages": [
-    "index",
-    "setup",
-    "commands"
-  ]
+  "pages": ["index", "setup", "commands"]
 }

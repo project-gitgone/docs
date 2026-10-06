@@ -2,9 +2,5 @@
   "title": "Server",
   "icon": "Server",
   "root": true,
-  "pages": [
-    "index",
-    "setup",
-    "concepts"
-  ]
+  "pages": ["index", "setup", "concepts"]
 }
