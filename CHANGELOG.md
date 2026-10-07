@@ -1,5 +1,11 @@
 # @project-gitgone/docs
 
+## 26.2.11
+
+### Patch Changes
+
+- [`8b5cdc0`](https://github.com/project-gitgone/docs/commit/8b5cdc05f6451f0717a027aca41a07b30ac1a3a0) Thanks [@Asuniia](https://github.com/Asuniia)! - Document the new `gitgone log` command, which shows the history of every environment as a graph with the keys changed by each version.
+
 ## 26.2.10
 
 ### Patch Changes
