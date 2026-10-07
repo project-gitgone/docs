@@ -1,0 +1,90 @@
+---
+title: Key concepts
+description: What to know to use the GitGone CLI with confidence.
+---
+
+## Linked folders
+
+`gitgone init` links the current folder to a project and writes a `.gitgone` file:
+
+| Key | Description |
+|---|---|
+| `projectId` | The project of this folder. |
+| `projectName` | Its name, shown by the CLI. |
+| `serverUrl` | The server of the project. It takes precedence over your global server. |
+| `environment` | The environment used by default in this folder. |
+
+The `.gitgone` file holds no secret: you can commit it, so teammates who clone the repository only need to sign in and run `gitgone pull`. Read or change it with `gitgone config get --local` and `gitgone config set <key> <value> --local`.
+
+Your session and your encrypted private key are stored once per machine, in the configuration folder of your system (`~/.config/gitgone-nodejs` on Linux).
+
+## Choosing the environment
+
+Commands that work on secrets (`pull`, `push`, `run`, `history`, `rollback`, `token create`) pick the environment in this order:
+
+1. the `-e, --env` option;
+2. the `environment` saved in `.gitgone` by `gitgone init`;
+3. a question, in a terminal;
+4. `development`, without a terminal.
+
+`gitgone push` to an environment that does not exist yet creates it, with a key of its own.
+
+## Interactive and non-interactive mode
+
+In a terminal, the CLI asks for every missing value: projects and users are picked in a searchable list, and actions that change data ask for confirmation.
+
+The CLI switches to non-interactive mode when:
+
+- standard input or output is not a terminal (a pipe, a CI job, a redirection);
+- the `CI` environment variable is set;
+- `--json` is used.
+
+In this mode the CLI never waits for an answer. A missing value stops the command with the option to pass, for example `Missing email.` → `pass --email`. Confirmations need `--yes`.
+
+```bash
+gitgone team add ada@example.com --team backend --role developer
+gitgone push -e staging --yes
+```
+
+## Tokens
+
+A token from `gitgone token create` reads one environment, for a pipeline or a server. When `GITGONE_TOKEN` is set, `gitgone pull` and `gitgone run` use it: no session, no `.gitgone` file and no password are needed. The token is decrypted where it runs, and the server only receives a verifier derived from it. See [Use GitGone in CI](/docs/cli/guides/ci).
+
+## Your vault password
+
+Your private key is encrypted with your password. The first command that needs it asks for your password, then remembers the key that opens your vault in the **system keychain**: macOS Keychain, Windows Credential Manager, or the Secret Service on Linux (GNOME Keyring, KWallet). The next commands don't ask again.
+
+- `gitgone logout` forgets it. `gitgone config set keychain off` stops remembering it.
+- Your password itself is never stored, only a key derived from it.
+- Anyone using your open session can use the remembered key, like the passwords saved in a browser.
+
+Without a keychain (a server without a desktop session, a container), the password is asked every time. Without a terminal, give it with the `GITGONE_PASSWORD` environment variable, which is never stored:
+
+```bash
+GITGONE_PASSWORD="$VAULT_PASSWORD" gitgone pull -e production --yes
+```
+
+Your password never leaves your machine: the CLI only sends a key derived from it.
+
+## Trusting your teammates' keys
+
+The first time you share a key with someone, the CLI shows the fingerprint of their public key and asks you to confirm it. Compare it with theirs (`gitgone key fingerprint`) through another channel. The fingerprint is then remembered: if the server ever returns another key for them, sharing is refused.
+
+This confirmation is never skipped by `--yes` and never given without a terminal. After a teammate's account was reset, use `gitgone key forget <email>` to accept their new key.
+
+## Output and colors
+
+- `--json` prints only the result of the command, as JSON. An error prints `{ "error": "...", "hint": "..." }`.
+- `push` and `pull` list the variables that change by name only. Values are never printed, even with `--json`.
+- Colors are turned off with `--no-color`, with the `NO_COLOR` variable, and when the output is not a terminal.
+- Errors show a message and a hint, never a stack trace. Set `DEBUG=gitgone` to print it.
+
+## Exit codes
+
+| Code | Meaning |
+|---|---|
+| `0` | Success. |
+| `1` | The command failed. The message says why. |
+| `130` | You cancelled a question (Ctrl+C). |
+
+`gitgone run` exits with the exit code of the command it ran.

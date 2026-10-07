@@ -1,45 +1,42 @@
 ---
-title: Getting Started
-description: How to get your GitGone server up and running.
+title: Install with Docker
+description: Run your own GitGone server in about five minutes.
 ---
 
-# Self-Host GitGone
-
-Ready to take control of your secrets? Setting up your own GitGone server is the best way to ensure your data stays private and secure. We've made it as simple as possible using Docker.
-
-<Callout type="info">
-  **Why Docker?** It packages everything GitGone needs (database, server, etc.) into a single, easy-to-run container. No manual database setup required!
-</Callout>
-
-## Prerequisites
-
-Before you start, make sure you have:
-- **Docker** installed on your machine.
-- A **Domain Name** (if you want to access it from the web).
-- 5 minutes of your time!
-
-## Quick Start (The "One-File" Setup)
-
-Everything you need to run GitGone is contained in a single configuration file called `docker-compose.yml`.
-
 <Steps>
-### Create a new folder
-Keep things organized by creating a dedicated folder for GitGone:
+<Step>
+### Create a folder
+
 ```bash
 mkdir gitgone && cd gitgone
 ```
+</Step>
 
-### Create the configuration file
-Create a file named `docker-compose.yml` and paste the following content:
+<Step>
+### Write the secrets
 
-```yaml
+Create a `.env` file with generated values instead of typing them:
+
+```bash
+echo "APP_KEY=$(openssl rand -hex 32)" > .env
+echo "DB_PASSWORD=$(openssl rand -hex 24)" >> .env
+echo "APP_URL=https://gitgone.example.com" >> .env
+```
+
+`APP_KEY` signs the sessions of the server and `DB_PASSWORD` protects the database. `APP_URL` is the address your team will use. Keep this file private and back it up.
+</Step>
+
+<Step>
+### Write docker-compose.yml
+
+```yaml title="docker-compose.yml"
 services:
   db:
     image: postgres:16-alpine
     restart: always
     environment:
       POSTGRES_USER: gitgone
-      POSTGRES_PASSWORD: your_strong_password
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: gitgone
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -58,70 +55,71 @@ services:
     ports:
       - "3333:3333"
     environment:
-      - NODE_ENV=production
-      - PORT=3333
-      - HOST=0.0.0.0
-      - APP_KEY=ChangeMeWithA32CharRandomString!
-      - APP_URL=http://localhost:3333
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=gitgone
-      - DB_PASSWORD=your_strong_password
-      - DB_DATABASE=gitgone
-      - ALLOW_LEGACY_CLIENTS=true
-      - ALLOW_LEGACY_TOKENS=true
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3333
+      LOG_LEVEL: info
+      APP_KEY: ${APP_KEY}
+      APP_URL: ${APP_URL}
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: gitgone
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: gitgone
+      ALLOW_LEGACY_CLIENTS: "false"
+      ALLOW_LEGACY_TOKENS: "false"
 
 volumes:
   pgdata:
 ```
 
-<Callout type="warn">
-  Don't forget to change `your_strong_password` and `APP_KEY` to something secure!
-</Callout>
+`ALLOW_LEGACY_*` refuse clients and tokens from before the current encryption protocol, which a new server does not need. Every setting is described in [Configuration](/docs/server/configuration).
+</Step>
 
-### Launch your server
-Run this command in your terminal:
+<Step>
+### Start it
+
 ```bash
-docker-compose up -d
+docker compose up -d
+docker compose logs -f app
 ```
 
-### Access your Server
-Your server is now running in the background. You can check if it's alive by visiting:
-[http://localhost:3333](http://localhost:3333)
+The server applies its database migrations, then listens on port `3333`.
+</Step>
 
-You should see a JSON response confirming the server is active.
+<Step>
+### Check it
 
-### Initial Admin Setup
-Since GitGone is a CLI-first tool, there is no web dashboard. You need to use the CLI to initialize your administrator account and link it to your server.
-
-On your local machine (where you installed the CLI), point the CLI to your server and log in:
 ```bash
-gitgone config set serverUrl http://localhost:3333
-gitgone login
+curl http://localhost:3333/healthcheck
 ```
 
-As long as the server has no administrator, `gitgone login` creates it. Follow the prompts to:
-1. **Create your administrator account**: Enter your Email, Full Name and Password.
-3. **Generate your master encryption keys**: The CLI will automatically generate your asymmetric keys and encrypt your vault with a key derived from your password. The password itself is never sent to the server.
+```json
+{ "status": "ok", "timestamp": "…", "initialized": false }
+```
 
-Once done, you'll be automatically logged in as a **SuperAdmin** and ready to manage users and teams!
+`initialized: false` means no administrator exists yet. Opening `http://localhost:3333` in a browser shows a status page with the next step.
+</Step>
+
+<Step>
+### Create the administrator
+
+From your machine, with the [CLI](/docs/cli/setup) installed:
+
+```bash
+gitgone login --server http://localhost:3333
+```
+
+As long as the server has no administrator, this command creates yours: enter your email, name and password. Your keys are generated on your machine, and your password never leaves it.
+</Step>
 </Steps>
 
-## Common Questions
+<Callout type="warn">
+  Before your team uses the server over a network, put it behind HTTPS: see [Domain and HTTPS](/docs/server/domain). Then remove the `ports` section, so that only the reverse proxy reaches the server.
+</Callout>
 
-<Accordions>
-<Accordion title="How do I update my server?">
-  Updating is easy! Just run:
-  ```bash
-  docker-compose pull && docker-compose up -d
-  ```
-</Accordion>
-<Accordion title="Where is my data stored?">
-  Your data is stored in a Docker Volume named `pgdata`. It persists even if you stop or delete the containers.
-</Accordion>
-<Accordion title="How do I use a custom domain?">
-  Change the `APP_URL` environment variable to your domain (e.g., `https://secrets.example.com`) and set up a reverse proxy like Nginx or Traefik.
-</Accordion>
-</Accordions>
+## Next steps
 
-Next step: [Install the CLI](../cli/setup) to start pushing secrets!
+- [Domain and HTTPS](/docs/server/domain)
+- [Invite your team](/docs/server/administration#invite-users)
+- [Create a team and your first project](/docs/quickstart#2-set-up-your-workspace)

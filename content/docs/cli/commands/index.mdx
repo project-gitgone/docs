@@ -1,0 +1,63 @@
+---
+title: Commands
+description: Overview of every GitGone CLI command, the global options and the environment variables.
+---
+
+**Syntax:** `gitgone COMMAND [SUBCOMMAND] [ARGS] [OPTIONS]`
+
+Run `gitgone` alone for a guided menu, `gitgone help` for the grouped list of commands, and `gitgone <command> --help` for the arguments, options and examples of a command.
+
+## Commands
+
+| Command | Description |
+|---|---|
+| [`login`](/docs/cli/commands/getting-started#login) | Sign in, or create the first administrator of a new server |
+| [`init`](/docs/cli/commands/getting-started#init) | Link this folder to a project, or create one |
+| [`status`](/docs/cli/commands/getting-started#status) | Show the server, account, project and keys in use here |
+| [`whoami`](/docs/cli/commands/getting-started#whoami) | Show the account you are signed in with |
+| [`logout`](/docs/cli/commands/getting-started#logout) | Forget the session and keys stored on this machine |
+| [`pull`](/docs/cli/commands/secrets#pull) | Download and decrypt secrets into the local `.env` |
+| [`push`](/docs/cli/commands/secrets#push) | Encrypt the local `.env` and send it to the server |
+| [`run`](/docs/cli/commands/secrets#run) | Run a command with the secrets in its environment |
+| [`history`](/docs/cli/commands/secrets#history) | List the versions of an environment |
+| [`rollback`](/docs/cli/commands/secrets#rollback) | Restore a previous version as the latest one |
+| [`project`](/docs/cli/commands/project#project-info) | Show, create and secure projects |
+| [`env`](/docs/cli/commands/project#env-list) | Manage the environments of the linked project |
+| [`key`](/docs/cli/commands/project#key-share) | Share and verify encryption keys |
+| [`token`](/docs/cli/commands/project#token-list) | Manage tokens for CI and servers |
+| [`access`](/docs/cli/commands/access#access-list) | Manage who can access the linked project |
+| [`team`](/docs/cli/commands/access#team-list) | Manage teams and their members |
+| [`role`](/docs/cli/commands/access#role-list) | Manage roles and their permissions |
+| [`audit`](/docs/cli/commands/access#audit) | Show who did what |
+| [`user`](/docs/cli/commands/administration#user-list) | Invite and manage the users of the instance |
+| [`account`](/docs/cli/commands/account#account-activate) | Activate your account or change your password |
+| [`config`](/docs/cli/commands/account#config-get) | Show or change the configuration |
+
+## Global options
+
+Every command accepts these options.
+
+| Option | Environment variable | Description |
+|---|---|---|
+| `--json` | — | Print the result as JSON, without colors or questions. Errors print `{ "error", "hint" }`. |
+| `-y, --yes` | — | Accept every confirmation. Never trusts a new teammate's key. |
+| `--server <url>` | `GITGONE_SERVER_URL` | Server to use for this run. |
+| `--no-color` | `NO_COLOR` | Disable colors. |
+| `-h, --help` | — | Show the help of the command. |
+| `-v, --version` | — | Show the version of the CLI (`gitgone --version`). |
+
+## Environment variables
+
+| Variable | Description |
+|---|---|
+| `GITGONE_TOKEN` | A token from `gitgone token create`. `pull` and `run` then read its environment, without a session. See [Use GitGone in CI](/docs/cli/guides/ci). |
+| `GITGONE_PASSWORD` | Your vault password, for commands that decrypt secrets without a terminal. |
+| `GITGONE_SERVER_URL` | Server to use, before the `.gitgone` file and your global configuration. |
+| `CI` | When set, the CLI never asks questions. |
+| `NO_COLOR` | When set, the output has no colors. |
+| `DEBUG` | `gitgone` prints the stack trace of errors. |
+
+## Related
+
+- [Key concepts](/docs/cli/concepts)
+- [Script the CLI](/docs/cli/guides/scripting)

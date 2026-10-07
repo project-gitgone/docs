@@ -1,0 +1,73 @@
+---
+title: Onboard a teammate
+description: Give a new teammate access to a project and its keys.
+---
+
+Secrets are encrypted with keys the server cannot read. Giving access is therefore two steps: a **role**, checked by the server, and the **key**, shared by someone who already has it.
+
+<Steps>
+<Step>
+### Invite them (administrators)
+
+On a self-hosted instance, an administrator creates the account:
+
+```bash
+gitgone user invite ada@example.com --name "Ada Lovelace" --role member
+```
+
+The CLI prints a one-time activation code. Send it through a secure channel. Your teammate then runs:
+
+```bash
+gitgone account activate
+```
+
+Their keys are generated on their machine.
+
+On a GitGone Cloud instance, skip this step: members of your organization run `gitgone login`, and their account is created the first time they sign in.
+</Step>
+
+<Step>
+### Give them a role
+
+Add them to a team, which gives access to all its projects:
+
+```bash
+gitgone team add ada@example.com --team backend --role developer
+```
+
+Or give a role on the linked project only:
+
+```bash
+gitgone access grant ada@example.com viewer
+```
+</Step>
+
+<Step>
+### Share the key
+
+Someone who already has access runs, from the project folder:
+
+```bash
+gitgone key share
+```
+
+The first time, the CLI shows your teammate's key fingerprint. Ask them to run `gitgone key fingerprint` and check that both match before confirming.
+
+Environments with a key of their own are shared separately:
+
+```bash
+gitgone key share -e production
+```
+</Step>
+
+<Step>
+### They pull
+
+Your teammate links the folder and gets the secrets:
+
+```bash
+gitgone init
+gitgone pull
+```
+</Step>
+</Steps>

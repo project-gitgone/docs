@@ -1,0 +1,55 @@
+---
+title: Administration
+description: Manage the users of a self-hosted instance.
+---
+
+These commands need an administrator role on the instance.
+
+## `user list`
+
+Lists the users of the instance and their instance role.
+
+```bash
+gitgone user list
+```
+
+## `user invite`
+
+Creates an account and prints a one-time activation code. Send it through a secure channel: the user activates their account with `gitgone account activate`.
+
+```bash
+gitgone user invite [EMAIL] [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `EMAIL` | User email. | asked |
+| `--name <name>` | Full name. | asked |
+| `--role <role>` | Instance role, by name or key. | asked |
+
+**Example**
+
+```bash
+gitgone user invite ada@example.com --name "Ada Lovelace" --role member
+```
+
+## `user reset`
+
+For a user who lost their password. Their keys and project access are wiped and a new activation code is printed. Their projects must then be shared with them again (`gitgone key share`).
+
+```bash
+gitgone user reset [EMAIL]
+```
+
+## `user role`
+
+Changes the instance role of a user.
+
+```bash
+gitgone user role [EMAIL] [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `EMAIL` | User email. | asked |
+| `--role <role>` | Instance role, by name or key. | asked |

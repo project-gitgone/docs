@@ -1,0 +1,75 @@
+---
+title: Administration
+description: The first administrator, users, instance roles and the audit log.
+---
+
+Administration is done with the CLI, by a user with an administrator role on the instance.
+
+## The first administrator
+
+A new server has no account. The first `gitgone login` creates the administrator, with the **Owner** role:
+
+```bash
+gitgone login --server https://gitgone.example.com
+```
+
+On a GitGone Cloud instance, the owner of the organization becomes Owner the first time they sign in with their cloud account.
+
+## Instance roles
+
+Each user has one role on the instance. Access to projects comes from team and project roles (see [Protect production](/docs/cli/guides/protect-production)).
+
+| Role | Can |
+|---|---|
+| **Owner** | Manage the whole instance, including its owners. |
+| **Admin** | Manage the whole instance, except its owners. |
+| **Member** | Create teams. Everything else comes from their team and project roles. |
+
+Change the role of a user:
+
+```bash
+gitgone user role ada@example.com --role admin
+```
+
+You can also create custom instance roles with `gitgone role create` (see [Create a custom role](/docs/cli/guides/custom-roles)).
+
+## Invite users
+
+```bash
+gitgone user invite ada@example.com --name "Ada Lovelace" --role member
+```
+
+The CLI prints a one-time activation code, valid for 72 hours. Send it through a secure channel. The user then runs:
+
+```bash
+gitgone account activate
+```
+
+They choose their password and their keys are generated on their machine. Then add them to a team (`gitgone team add`) and share the project keys with them (`gitgone key share`). See [Onboard a teammate](/docs/cli/guides/onboard-teammate).
+
+`gitgone user list` lists every user and their instance role.
+
+## Lost passwords
+
+Nobody can recover a password, not even an administrator: it is what protects the user's private key. Reset the account instead:
+
+```bash
+gitgone user reset ada@example.com
+```
+
+Their keys are wiped and a new activation code is printed. Once they have activated their account again, share their projects with them with `gitgone key share`.
+
+## Who can create accounts
+
+By default, `ALLOW_REGISTRATION` lets the API create accounts. Set it to `false` so that only users allowed to manage users can do it. See [Configuration](/docs/server/configuration#security).
+
+## Audit log
+
+Every sensitive action is recorded: pulls, pushes, rollbacks, key sharing, token use, role changes, sign-ins. Read the whole instance with:
+
+```bash
+gitgone audit --all
+gitgone audit --all --action tokens.use --limit 100
+```
+
+Events are kept for `AUDIT_RETENTION_DAYS` days (365 by default).

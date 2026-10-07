@@ -1,0 +1,64 @@
+---
+title: Upgrades and backups
+description: Keep your server up to date, back it up and watch its health.
+---
+
+## Upgrade
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+At startup, the server applies the database migrations of the new version, then serves requests. Read the [changelog](https://github.com/project-gitgone/server/blob/main/CHANGELOG.md) before upgrading.
+
+### Choose a version
+
+The image is published with three kinds of tags:
+
+| Tag | Follows |
+|---|---|
+| `latest` | every release |
+| `26.10` | the releases of a month (`year.month`) |
+| `26.10.7` | one exact release |
+
+Pin a tag in `docker-compose.yml` to upgrade when you decide:
+
+```yaml
+image: ghcr.io/project-gitgone/server:26.10
+```
+
+Keep your CLIs up to date too: `npm install -g @project-gitgone/cli`.
+
+## Back up
+
+Everything lives in the PostgreSQL database. Dump it regularly:
+
+```bash
+docker compose exec -T db pg_dump -U gitgone -d gitgone -Fc > gitgone-$(date +%F).dump
+```
+
+Also keep a copy of your `.env` file, with `APP_KEY` and the database password.
+
+<Callout type="info">
+  Secrets in a backup stay encrypted, and only your users can decrypt them. A backup still contains the list of users, projects and roles: store it as carefully as the server.
+</Callout>
+
+## Restore
+
+On a server with the same version, stop the application, restore the dump, then start again:
+
+```bash
+docker compose stop app
+docker compose exec -T db pg_restore -U gitgone -d gitgone --clean --if-exists < gitgone-2026-10-07.dump
+docker compose start app
+```
+
+## Watch it
+
+| Check | How |
+|---|---|
+| Is it up? | `curl https://gitgone.example.com/healthcheck` returns `"status": "ok"`. Use it in your monitoring. |
+| Is it set up? | The same response has `"initialized": true` once an administrator exists. |
+| Is the database fine? | The status page at `/` shows **degraded** when the database is unreachable or migrations are pending. |
+| What happened? | `docker compose logs -f app`, and `gitgone audit --all` for the actions of your users. |

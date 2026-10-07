@@ -1,0 +1,53 @@
+---
+title: Configuration
+description: Every environment variable of the GitGone server.
+---
+
+The server is configured with environment variables, set in `docker-compose.yml` or in the `.env` file next to it. Restart the server after a change:
+
+```bash
+docker compose up -d
+```
+
+## Required
+
+| Variable | Description | Example |
+|---|---|---|
+| `NODE_ENV` | Always `production` for a real server. | `production` |
+| `HOST` | Address the server listens on. | `0.0.0.0` |
+| `PORT` | Port the server listens on. | `3333` |
+| `APP_KEY` | Secret used to sign sessions. At least 32 random characters. Generate it with `openssl rand -hex 32`. | — |
+| `LOG_LEVEL` | `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. | `info` |
+| `DB_HOST` | PostgreSQL host. | `db` |
+| `DB_PORT` | PostgreSQL port. | `5432` |
+| `DB_USER` | PostgreSQL user. | `gitgone` |
+| `DB_DATABASE` | PostgreSQL database. | `gitgone` |
+
+## Server
+
+| Variable | Description | Default |
+|---|---|---|
+| `APP_URL` | Public address of the server, e.g. `https://gitgone.example.com`. Shown on the status page and used for the GitGone Cloud sign-in. | address of the request |
+| `TRUST_PROXY` | Set to `true` behind a reverse proxy, so the server uses the client address and protocol it forwards. | `false` |
+| `CORS_ALLOWED_ORIGINS` | Comma-separated list of origins allowed to call the API from a browser. The CLI does not need it. | every origin |
+| `STATUS_PAGE` | Set to `false` to hide the status page shown at `/` in a browser. | shown |
+| `DB_PASSWORD` | PostgreSQL password. | none |
+| `DB_POOL_MIN` / `DB_POOL_MAX` | Size of the database connection pool. | `2` / `10` |
+
+## Security
+
+| Variable | Description | Default |
+|---|---|---|
+| `TOKEN_EXPIRES_IN` | How long a CLI session stays valid, e.g. `30 days` or `12 hours`. Users sign in again with `gitgone login` after it. | `30 days` |
+| `ALLOW_REGISTRATION` | When `false`, only users allowed to manage users can create accounts. | `true` |
+| `ALLOW_LEGACY_CLIENTS` | Accept accounts and clients from before the current encryption protocol. Set to `false` once every user has signed in with a recent CLI. | `true` |
+| `ALLOW_LEGACY_TOKENS` | Accept project tokens from before the current protocol. Set to `false` once they are recreated with `gitgone token create`. | `true` |
+| `AUDIT_RETENTION_DAYS` | Number of days the audit log is kept. | `365` |
+
+## GitGone Cloud
+
+`CLOUD_ISSUER`, `CLOUD_JWKS_URL`, `CLOUD_INSTANCE_ID`, `CLOUD_CLIENT_ID` and `CLOUD_CLIENT_SECRET` connect an instance to GitGone Cloud, so its members sign in with their cloud account. GitGone Cloud sets them on the instances it deploys. Leave them empty on a self-hosted server.
+
+<Callout type="info">
+  When these variables are set, the first administrator is created by `gitgone login` with the cloud account of the organization owner, instead of a password.
+</Callout>

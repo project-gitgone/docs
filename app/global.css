@@ -9,3 +9,8 @@
   --color-fd-primary: #60a441;
   --color-fd-primary-foreground: #ffffff;
 }
+
+.dark {
+  --color-fd-primary: #60a441;
+  --color-fd-primary-foreground: #ffffff;
+}

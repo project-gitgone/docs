@@ -1,0 +1,83 @@
+---
+title: Domain and HTTPS
+description: Put your server behind a reverse proxy with a certificate.
+---
+
+Your team's CLIs send their sessions and encrypted data to the server: over a network, always use HTTPS. The server itself speaks HTTP on port `3333`. A reverse proxy in front of it handles the domain and the certificate.
+
+Whatever proxy you use:
+
+1. Point a DNS record (for example `gitgone.example.com`) to your machine.
+2. Set `APP_URL=https://gitgone.example.com` and `TRUST_PROXY=true` on the server.
+3. Remove the `ports` section of the server, so it is only reachable through the proxy.
+
+<Tabs items={['Caddy', 'Traefik']}>
+  <Tab value="Caddy">
+    Caddy gets and renews the certificate on its own. Add it to your `docker-compose.yml`:
+
+    ```yaml title="docker-compose.yml"
+    services:
+      caddy:
+        image: caddy:2
+        restart: always
+        ports:
+          - "80:80"
+          - "443:443"
+        volumes:
+          - ./Caddyfile:/etc/caddy/Caddyfile
+          - caddy_data:/data
+
+      # db and app as in the installation guide, without the ports of app
+
+    volumes:
+      pgdata:
+      caddy_data:
+    ```
+
+    ```txt title="Caddyfile"
+    gitgone.example.com {
+      reverse_proxy app:3333
+    }
+    ```
+  </Tab>
+  <Tab value="Traefik">
+    If Traefik already runs on the machine, add the server to its network and give it labels:
+
+    ```yaml title="docker-compose.yml"
+    services:
+      app:
+        # image and environment as in the installation guide
+        networks:
+          - default
+          - traefik
+        labels:
+          - "traefik.enable=true"
+          - "traefik.docker.network=traefik"
+          - "traefik.http.routers.gitgone.rule=Host(`gitgone.example.com`)"
+          - "traefik.http.routers.gitgone.entrypoints=websecure"
+          - "traefik.http.routers.gitgone.tls.certresolver=letsencrypt"
+          - "traefik.http.services.gitgone.loadbalancer.server.port=3333"
+
+    networks:
+      traefik:
+        external: true
+    ```
+
+    Use the names of your own Traefik network, entry point and certificate resolver.
+  </Tab>
+</Tabs>
+
+## Check it
+
+```bash
+docker compose up -d
+curl https://gitgone.example.com/healthcheck
+```
+
+Then point the CLI to the new address:
+
+```bash
+gitgone login --server https://gitgone.example.com
+```
+
+Folders already linked keep the address saved in their `.gitgone` file: update it with `gitgone config set serverUrl https://gitgone.example.com --local`.

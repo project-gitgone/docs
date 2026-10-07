@@ -1,0 +1,135 @@
+---
+title: Quickstart
+description: From nothing to your first shared secret, in about ten minutes.
+---
+
+This guide takes you through the whole path: get a server, sign in, create a project, share it with a teammate. Pick how you want to run your server, then follow the common steps.
+
+## 1. Get a server
+
+<Tabs items={['GitGone Cloud', 'Self-hosted']}>
+  <Tab value="GitGone Cloud">
+    1. Create an account on [gitgone.org](https://gitgone.org/sign-up), then an organization.
+    2. Choose a plan. Your private instance is deployed in a few minutes, at a `gitgone.org` address or your own domain.
+    3. Open the overview of your organization: it shows the address of your instance and the commands to run.
+
+    As the owner of the organization, you become the administrator of the instance the first time you sign in with the CLI.
+  </Tab>
+  <Tab value="Self-hosted">
+    Run the server with Docker on a machine of yours, by following [Install with Docker](/docs/server/setup). It takes about five minutes.
+
+    You need its URL for the next steps, for example `https://gitgone.example.com`.
+  </Tab>
+</Tabs>
+
+## 2. Set up your workspace
+
+<Steps>
+<Step>
+### Install the CLI
+
+```bash
+npm install -g @project-gitgone/cli
+```
+
+It needs Node.js 20 or newer. See [Installation](/docs/cli/setup) for pnpm, yarn and npx.
+</Step>
+
+<Step>
+### Sign in
+
+```bash
+gitgone login --server https://gitgone.example.com
+```
+
+- **GitGone Cloud**: your browser opens to sign in with your cloud account.
+- **Self-hosted, first time**: the server has no administrator yet, so this command creates yours. Choose your password carefully: nobody can recover it.
+
+Your encryption keys are generated on your machine. Your password never leaves it.
+</Step>
+
+<Step>
+### Create a team
+
+Projects belong to teams. On a new server, create the first one:
+
+```bash
+gitgone team create Backend
+```
+
+You become its maintainer.
+</Step>
+
+<Step>
+### Create the project
+
+From the root of your application:
+
+```bash
+cd my-app
+gitgone init
+```
+
+Choose **Create a new project**, give it a name, then pick its default environment (for example `development`). The CLI writes a `.gitgone` file: commit it, it contains no secret.
+</Step>
+
+<Step>
+### Push your secrets
+
+```bash
+gitgone push
+```
+
+The CLI lists the variables of your `.env`, asks for confirmation, encrypts them and sends them. Check the result:
+
+```bash
+gitgone history
+```
+</Step>
+</Steps>
+
+## 3. Bring your team
+
+<Steps>
+<Step>
+### Give them an account
+
+- **GitGone Cloud**: invite them to your organization from the web console. They run `gitgone login` once: it creates their account on the instance.
+- **Self-hosted**: create their account and send them the activation code:
+
+```bash
+gitgone user invite ada@example.com --name "Ada Lovelace" --role member
+```
+
+They run `gitgone account activate` with that code.
+</Step>
+
+<Step>
+### Add them to the team
+
+```bash
+gitgone team add ada@example.com --team Backend --role developer
+```
+
+`developer` reads every environment and pushes to the unprotected ones. See [Protect production](/docs/cli/guides/protect-production) for the other roles.
+</Step>
+
+<Step>
+### Share the key
+
+```bash
+gitgone key share
+```
+
+The first time, compare the fingerprint shown with the one your teammate gets from `gitgone key fingerprint`. Then they clone the repository and run `gitgone pull`.
+</Step>
+</Steps>
+
+## Next steps
+
+<Cards>
+  <Card icon={<Shield />} title="Protect production" description="Decide who can read and push production." href="/docs/cli/guides/protect-production" />
+  <Card icon={<Zap />} title="Use GitGone in CI" description="Give your pipelines their secrets with a token." href="/docs/cli/guides/ci" />
+  <Card icon={<Terminal />} title="Run without a .env" description="Pass secrets to your app without writing them to disk." href="/docs/cli/guides/run-without-env" />
+  <Card icon={<BookOpen />} title="Daily workflow" description="Pull, change, push: the loop of every day." href="/docs/workflow" />
+</Cards>

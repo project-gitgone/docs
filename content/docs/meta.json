@@ -3,11 +3,5 @@
   "icon": "BookOpen",
   "root": true,
   "defaultOpen": true,
-  "pages": [
-    "index",
-    "---Getting Started---",
-    "architecture",
-    "workflow",
-    "comparison"
-  ]
+  "pages": ["index", "quickstart", "---Learn---", "workflow", "architecture", "comparison"]
 }

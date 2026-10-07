@@ -1,0 +1,56 @@
+---
+title: Protect production
+description: Decide who can read and push your production secrets.
+---
+
+Access is checked by the server for every action, down to the environment. Protecting an environment changes what the default roles can do with it.
+
+<Steps>
+<Step>
+### Protect the environment
+
+```bash
+gitgone env protect production
+```
+
+`gitgone env list` shows which environments are protected.
+</Step>
+
+<Step>
+### Pick the right role for each person
+
+The default roles treat protected environments differently:
+
+| Role | Unprotected environments | Protected environments |
+|---|---|---|
+| Maintainer | read, push, roll back | read, push, roll back |
+| Developer | read, push, roll back | read only |
+| Viewer | read | no access |
+
+```bash
+gitgone team role tom@example.com --team backend --role viewer
+```
+
+Need something else, like a developer who never reads production? [Create a custom role](/docs/cli/guides/custom-roles).
+</Step>
+
+<Step>
+### Give production its own key
+
+```bash
+gitgone env rotate production
+```
+
+The environment gets a key of its own, shared only with the members who can read it. Someone without access to production never receives it.
+</Step>
+
+<Step>
+### Keep secrets off the disk (optional)
+
+```bash
+gitgone project policy memory-only
+```
+
+`gitgone pull` is then refused for the project, and members use `gitgone run`. See [Run without a .env file](/docs/cli/guides/run-without-env).
+</Step>
+</Steps>

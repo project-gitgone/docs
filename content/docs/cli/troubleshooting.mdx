@@ -1,0 +1,70 @@
+---
+title: Troubleshooting
+description: Fix common GitGone CLI errors.
+---
+
+Every error comes with a hint on the next line (`→ …`). Here are the most common ones.
+
+## Unknown command "pul".
+
+A typo: the hint gives the closest command (`did you mean gitgone pull?`). Run `gitgone help` for the full list.
+
+## "gitgone keys share" was renamed.
+
+The command exists under a new name, given in the hint. See the [migration guide](/docs/cli/migration).
+
+## Cannot reach the server.
+
+The CLI could not connect to the server it uses. Check it with `gitgone config get serverUrl` (or `gitgone status`), then fix it with `gitgone login --server <url>`. A `serverUrl` in the `.gitgone` file of the folder takes precedence over your global setting.
+
+## Session expired. / You are not logged in.
+
+Sign in again with `gitgone login`.
+
+## GITGONE_TOKEN was refused
+
+The token was revoked, has expired, or was copied incompletely. Tokens are also revoked when the key of their environment is rotated. Create a new one with `gitgone token create <name> -e <environment>` and update your CI secret.
+
+## This folder is not linked to a project.
+
+Run `gitgone init` from the folder, or from the root of your repository where the `.gitgone` file is.
+
+## Missing email. (or any other value)
+
+The CLI is not in a terminal, so it cannot ask. Pass the value as an argument or option, as the hint says (`pass --email`). See [Interactive and non-interactive mode](/docs/cli/concepts#interactive-and-non-interactive-mode).
+
+## Cannot ask "…" without an interactive terminal.
+
+A confirmation was needed without a terminal. Add `--yes`, or run the command in a terminal.
+
+## Your vault password is required.
+
+Without a terminal, give your password with the `GITGONE_PASSWORD` environment variable.
+
+## Could not unlock your vault: wrong password or corrupted local vault.
+
+Check your password. If you changed it on another machine, sign in again here with `gitgone login` to get your updated vault. If it is right, `gitgone login` also restores a damaged vault on this machine. If you lost your password, an administrator must reset your account (`gitgone user reset`).
+
+## The public key of … has changed
+
+The server returned another key for this teammate than the one you trusted, so sharing is refused. If they really reset their account, compare their new fingerprint (`gitgone key fingerprint` on their side) through another channel, then run `gitgone key forget <email>` and share again.
+
+## The server returned v… but v… was already seen
+
+The server sent an older version than one you already received. The CLI refuses it, as it may be a rollback attack. Contact your administrator.
+
+## Cancelled. (exit code 130)
+
+You pressed Ctrl+C during a question. Nothing was changed after that point.
+
+## gitgone: command not found
+
+Your global package folder is not in your `PATH`. With pnpm, run `pnpm setup` and open a new terminal. You can also run the CLI with `npx @project-gitgone/cli`.
+
+## Something else went wrong
+
+Run the command again with `DEBUG=gitgone` to see the full error, and [open an issue](https://github.com/project-gitgone/cli/issues).
+
+```bash
+DEBUG=gitgone gitgone pull
+```

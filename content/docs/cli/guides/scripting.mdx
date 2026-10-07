@@ -1,0 +1,56 @@
+---
+title: Script the CLI
+description: Use the CLI in scripts, without questions.
+---
+
+Without a terminal, the CLI never asks anything: every value comes from options and environment variables. See [Interactive and non-interactive mode](/docs/cli/concepts#interactive-and-non-interactive-mode).
+
+<Callout type="info">
+  The CLI acts as your user account, and `gitgone login` needs a terminal. Script it on a machine where you are already signed in. For CI pipelines, use a token instead: see [Use GitGone in CI](/docs/cli/guides/ci).
+</Callout>
+
+## Provide everything up front
+
+```bash
+export GITGONE_PASSWORD="$VAULT_PASSWORD"
+
+gitgone init --project shop -e staging --server https://gitgone.example.com --json
+gitgone pull --yes
+```
+
+| Need | How |
+|---|---|
+| Server | `--server <url>`, or `serverUrl` in `.gitgone` |
+| Environment | `-e, --env <name>`, or `environment` in `.gitgone` |
+| Vault password | the system keychain once unlocked, or `GITGONE_PASSWORD` |
+| Confirmations | `-y, --yes` |
+| Other values | the arguments and options of each [command](/docs/cli/commands) |
+
+The trust of a new teammate's key is never accepted without a terminal: share keys from your own machine with `gitgone key share`.
+
+## Read the results
+
+With `--json`, each command prints its result as JSON, and nothing else:
+
+```bash
+gitgone push -e staging --yes --json
+```
+
+```json
+{
+  "pushed": true,
+  "environment": "staging",
+  "version": 12,
+  "changes": { "added": ["NEW_FLAG"], "changed": ["API_URL"], "removed": [] }
+}
+```
+
+On failure the exit code is `1` and the output is an error object:
+
+```json
+{ "error": "Session expired.", "hint": "gitgone login" }
+```
+
+## Pipelines and servers
+
+Machines that have no user account read one environment with a token: set `GITGONE_TOKEN`, then use `gitgone run` or `gitgone pull`. See [Use GitGone in CI](/docs/cli/guides/ci).

@@ -1,0 +1,96 @@
+---
+title: Use GitGone in CI
+description: Give your pipelines their secrets with a token, in GitHub Actions or GitLab CI.
+---
+
+A pipeline has no user account and no terminal. It reads the secrets of **one environment** with a token. Decryption happens in the pipeline: the server only receives a verifier derived from the token, never the token itself.
+
+<Steps>
+<Step>
+### Create a token
+
+On your machine, from the project folder:
+
+```bash
+gitgone token create CI_STAGING -e staging
+```
+
+The token (`v2.<id>.<secret>`) is printed once. Create one token per pipeline and environment, so you can revoke them one by one.
+</Step>
+
+<Step>
+### Store it as a CI secret
+
+Add two variables to your CI settings:
+
+| Variable | Value |
+|---|---|
+| `GITGONE_TOKEN` | the token, stored as a secret (masked) |
+| `GITGONE_SERVER_URL` | the URL of your GitGone server |
+</Step>
+
+<Step>
+### Use the secrets in a job
+
+When `GITGONE_TOKEN` is set, `gitgone run` and `gitgone pull` use it. They need no login, no `.gitgone` file and no password.
+
+<Tabs items={['GitHub Actions', 'GitLab CI']}>
+  <Tab value="GitHub Actions">
+    ```yaml title=".github/workflows/test.yml"
+    name: Test
+
+    on: [push]
+
+    jobs:
+      test:
+        runs-on: ubuntu-latest
+        env:
+          GITGONE_SERVER_URL: https://gitgone.example.com
+          GITGONE_TOKEN: ${{ secrets.GITGONE_TOKEN }}
+        steps:
+          - uses: actions/checkout@v4
+          - uses: actions/setup-node@v4
+            with:
+              node-version: 22
+          - run: npm ci
+          - run: npx @project-gitgone/cli run -- npm test
+    ```
+  </Tab>
+  <Tab value="GitLab CI">
+    ```yaml title=".gitlab-ci.yml"
+    test:
+      image: node:22
+      variables:
+        GITGONE_SERVER_URL: https://gitgone.example.com
+      script:
+        - npm ci
+        - npx @project-gitgone/cli run -- npm test
+    ```
+
+    Define `GITGONE_TOKEN` as a masked CI/CD variable of the project.
+  </Tab>
+</Tabs>
+
+`gitgone run` passes the secrets to your command without writing them to disk.
+</Step>
+
+<Step>
+### Need a .env file? (optional)
+
+Some tools only read a file, for example a Docker build:
+
+```bash
+npx @project-gitgone/cli pull --yes
+docker build --secret id=env,src=.env .
+```
+
+Delete the file at the end of the job if the runner is shared.
+</Step>
+</Steps>
+
+## Good to know
+
+- A token reads only its environment. `-e` with another environment is refused.
+- Each use is recorded in the audit log, with the name of the token (`gitgone audit --action tokens.use`).
+- Revoke a token with `gitgone token revoke <id>`. Rotating the key of its environment revokes it too: recreate it, then update the CI secret.
+- In CI, the CLI never asks questions. See [Interactive and non-interactive mode](/docs/cli/concepts#interactive-and-non-interactive-mode).

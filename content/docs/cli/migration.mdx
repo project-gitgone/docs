@@ -1,0 +1,53 @@
+---
+title: Migrating to the new commands
+description: The CLI commands were reorganized. Here is where each old command went.
+---
+
+# Migrating to the new commands
+
+The CLI was redesigned: commands are grouped by topic, every group uses the same verbs (`list`, `create`, `delete` or `revoke`), and the old names were removed. If you type an old name, the CLI tells you the new one:
+
+```bash
+$ gitgone keys share
+✖ "gitgone keys share" was renamed.
+  → use gitgone key share
+```
+
+## Renamed commands
+
+| Before | Now |
+|---|---|
+| `gitgone link` | `gitgone init` |
+| `gitgone admin setup` | `gitgone login` |
+| `gitgone activate` | `gitgone account activate` |
+| `gitgone passwd` | `gitgone account password` |
+| `gitgone keys share \| fingerprint \| forget` | `gitgone key share \| fingerprint \| forget` |
+| `gitgone tokens list \| create` | `gitgone token list \| create` |
+| `gitgone tokens delete <id>` | `gitgone token revoke <id>` |
+| `gitgone roles list \| show \| create \| delete` | `gitgone role list \| show \| create \| delete` |
+| `gitgone team list-members` | `gitgone team members` |
+| `gitgone team add-member` | `gitgone team add` |
+| `gitgone team remove-member` | `gitgone team remove` |
+| `gitgone team set-role` | `gitgone team role` |
+| `gitgone project set-policy` | `gitgone project policy` |
+| `gitgone admin users list` | `gitgone user list` |
+| `gitgone admin users create` | `gitgone user invite` |
+| `gitgone admin users reset` | `gitgone user reset` |
+| `gitgone admin users set-role` | `gitgone user role` |
+| `gitgone config local-set <key> <value>` | `gitgone config set <key> <value> --local` |
+| `gitgone config local-get` | `gitgone config get --local` |
+| `gitgone pull --force` | `gitgone pull --yes` |
+
+## New commands
+
+- `gitgone` alone opens a guided menu.
+- `gitgone status`, `gitgone whoami` and `gitgone logout`.
+- `gitgone project info` and `gitgone team list`.
+
+## Changes in behavior
+
+- **Every command accepts `--json`, `--yes`, `--server` and `--no-color`.** See [Global options](/docs/cli/commands#global-options).
+- **The environment** comes from `-e`, then from the default saved by `gitgone init`, then the CLI asks. `push` now also accepts `-e`.
+- **`push` and `pull` show what changes** (variable names only) and ask before applying. In scripts, add `--yes`.
+- **Without a terminal, the CLI never waits for an answer:** it fails and names the option to pass. Give your vault password with `GITGONE_PASSWORD`.
+- **Missing values can be passed as arguments:** for example `gitgone team add ada@example.com --team backend --role developer`.

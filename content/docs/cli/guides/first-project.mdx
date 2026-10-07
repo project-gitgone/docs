@@ -1,0 +1,68 @@
+---
+title: Set up a project
+description: Sign in, link a folder and get your first secrets.
+---
+
+<Steps>
+<Step>
+### Sign in
+
+```bash
+gitgone login --server https://gitgone.example.com
+```
+
+`--server` is saved as your default server. On a GitGone Cloud instance, your browser opens to sign in with your cloud account. On a new self-hosted server, this command creates the first administrator.
+
+If an administrator created your account, run `gitgone account activate` instead, with the code they gave you.
+</Step>
+
+<Step>
+### Link the folder
+
+From the root of your project:
+
+```bash
+gitgone init
+```
+
+Pick an existing project in the list, or **Create a new project**, then the environment this folder uses by default. The CLI writes a `.gitgone` file you can commit.
+</Step>
+
+<Step>
+### Get the secrets
+
+```bash
+gitgone pull
+```
+
+If you already have a `.env`, the CLI lists the variables that would be added, changed or removed, and asks before overwriting it.
+</Step>
+
+<Step>
+### Share your changes
+
+After editing `.env`:
+
+```bash
+gitgone push
+```
+
+The CLI shows what changed and asks for confirmation. Nothing is sent if nothing changed.
+</Step>
+
+<Step>
+### Run without a .env (optional)
+
+```bash
+gitgone run -- npm start
+```
+
+The secrets are passed to your command without being written to disk. To force this for the whole project, use `gitgone project policy memory-only`.
+</Step>
+</Steps>
+
+## Next steps
+
+- [Onboard a teammate](/docs/cli/guides/onboard-teammate)
+- [Secrets commands](/docs/cli/commands/secrets)
+- [Choosing the environment](/docs/cli/concepts#choosing-the-environment)

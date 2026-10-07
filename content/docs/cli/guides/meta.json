@@ -1,0 +1,15 @@
+{
+  "title": "Guides",
+  "pages": [
+    "first-project",
+    "onboard-teammate",
+    "remove-teammate",
+    "protect-production",
+    "custom-roles",
+    "restore-version",
+    "run-without-env",
+    "rotate-keys",
+    "ci",
+    "scripting"
+  ]
+}

@@ -1,0 +1,68 @@
+---
+title: Getting started
+description: Sign in, link a folder and check your setup.
+---
+
+## `login`
+
+Signs in to the server. Your password never leaves your machine: the CLI derives an authentication key from it. On a GitGone Cloud instance, it opens your browser to sign in with your cloud account. On a new self-hosted server, it creates the first administrator. Accounts created with the previous protocol are upgraded on their next login.
+
+```bash
+gitgone login [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `--password` | Use an instance password instead of the GitGone Cloud account. | `false` |
+| `--server <url>` | Server to sign in to. It is saved as your default server. | current server |
+
+**Example**
+
+```bash
+gitgone login --server https://gitgone.example.com
+```
+
+## `init`
+
+Links the current folder to a project, or creates one, then saves the default environment of the folder in `.gitgone`. If you are not signed in, it starts with `login`.
+
+```bash
+gitgone init [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `--project <project>` | Project to link, by id or name. | asked in a searchable list |
+| `-e, --env <name>` | Default environment of the folder. | asked |
+
+Without `--project`, the list also offers **Create a new project**.
+
+**Example**
+
+```bash
+gitgone init --project shop -e staging
+```
+
+## `status`
+
+Shows the server and whether it answers, your account, the linked project, its default environment, whether your keys are on this machine and remembered in the system keychain, then the next step to run.
+
+```bash
+gitgone status
+```
+
+## `whoami`
+
+Shows the account you are signed in with, its instance role and the server.
+
+```bash
+gitgone whoami
+```
+
+## `logout`
+
+Forgets the session and the keys stored on this machine, including the vault key remembered in the system keychain. Your server URL and the fingerprints of your teammates are kept.
+
+```bash
+gitgone logout
+```

@@ -1,0 +1,52 @@
+---
+title: Rotate keys
+description: Replace an encryption key and re-encrypt its history.
+---
+
+Rotate a key when someone who knew it should not anymore: a departure, a lost laptop, a doubt. The CLI rotates automatically after `gitgone team remove` and `gitgone access revoke`. You can also do it yourself.
+
+<Steps>
+<Step>
+### Check what needs it
+
+```bash
+gitgone env list
+```
+
+The `rotation` column says `required` when the server knows a key must be replaced.
+</Step>
+
+<Step>
+### Rotate an environment key
+
+```bash
+gitgone env rotate production
+```
+
+A new key is generated, the whole history of the environment is re-encrypted on your machine, and the key is shared with the members who can read it. An environment that used the project key gets its own key.
+</Step>
+
+<Step>
+### Rotate the project key (owners)
+
+```bash
+gitgone project rotate-key
+```
+
+This covers every environment that still uses the project key.
+</Step>
+
+<Step>
+### Recreate the tokens
+
+Tokens tied to the old key are revoked. The CLI tells you how many. Recreate them:
+
+```bash
+gitgone token create CI_PROD -e production
+```
+</Step>
+</Steps>
+
+<Callout type="warn">
+  A new key protects what comes next. If a value may have been copied, change it at its source too (API key, database password), then `gitgone push`.
+</Callout>

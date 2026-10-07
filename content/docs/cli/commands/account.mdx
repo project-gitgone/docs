@@ -1,0 +1,60 @@
+---
+title: Account
+description: Your account and the configuration of the CLI.
+---
+
+## `account activate`
+
+Activates an account created by an administrator. You choose your password, and your encryption keys are generated on your machine.
+
+```bash
+gitgone account activate [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `--email <email>` | Your email. | asked |
+| `--code <code>` | Activation code from your administrator. | asked |
+
+<Callout type="warn">
+  Nobody can recover a lost password, not even an administrator. A reset (`gitgone user reset`) gives you new keys, and your projects must be shared with you again.
+</Callout>
+
+## `account password`
+
+Changes your password. Your vault is re-encrypted on your machine and your other sessions are signed out. The key remembered in the system keychain is replaced.
+
+```bash
+gitgone account password
+```
+
+## `config get`
+
+Shows your global settings (`serverUrl`, `userEmail`, `keychain`), or one of them. With `--local`, shows the `.gitgone` file of the folder.
+
+```bash
+gitgone config get [KEY] [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `KEY` | Key to show. | all keys |
+| `--local` | Read the `.gitgone` file of the folder. | `false` |
+
+## `config set`
+
+```bash
+gitgone config set KEY VALUE [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `KEY` | `serverUrl` or `keychain` (`on` or `off`), or with `--local`: `projectId`, `teamId`, `projectName`, `serverUrl`, `environment`. **Required.** | — |
+| `VALUE` | New value. **Required.** | — |
+| `--local` | Change the `.gitgone` file of the folder. | `false` |
+
+**Example**
+
+```bash
+gitgone config set environment staging --local
+```

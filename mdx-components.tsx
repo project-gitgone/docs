@@ -8,11 +8,15 @@ import defaultMdxComponents from "fumadocs-ui/mdx";
 import {
   BookOpen,
   Cpu,
+  DatabaseBackup,
+  Globe,
   Info,
+  Rocket,
   Server,
   Settings,
   Shield,
   Terminal,
+  Users,
   Zap,
 } from "lucide-react";
 import type { MDXComponents } from "mdx/types";
@@ -41,6 +45,10 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     Settings,
     Cpu,
     BookOpen,
-      ...components,
+    DatabaseBackup,
+    Globe,
+    Rocket,
+    Users,
+    ...components,
   };
 }

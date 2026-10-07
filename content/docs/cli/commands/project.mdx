@@ -1,0 +1,183 @@
+---
+title: Project
+description: Projects, environments, encryption keys and tokens.
+---
+
+## `project info`
+
+Shows the name, team, policy, key version and environments of the linked project.
+
+```bash
+gitgone project info
+```
+
+## `project create`
+
+Creates a project in one of your teams, with its encryption key. Link it to a folder afterwards with `gitgone init`.
+
+```bash
+gitgone project create [NAME] [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `NAME` | Project name. | asked (folder name suggested) |
+| `--team <team>` | Team, by name or id. | your team if you have one, else asked |
+
+**Example**
+
+```bash
+gitgone project create shop --team backend
+```
+
+## `project rotate-key`
+
+Gives the project a new key (owners only). The history of the environments that share the project key is re-encrypted on your machine, the new key is shared with every member, and their tokens are revoked.
+
+```bash
+gitgone project rotate-key [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `-y, --yes` | Rotate without asking. | `false` |
+
+## `project policy`
+
+Sets the security policy of the linked project.
+
+```bash
+gitgone project policy [MODE]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `MODE` | `standard` allows `gitgone pull`. `memory-only` forbids it and forces `gitgone run`. | asked |
+
+<Callout type="info">
+  The policy is a guardrail for well-behaved clients, not a security boundary: any member who can decrypt the secrets can still write them to disk.
+</Callout>
+
+## `env list`
+
+Lists the environments of the linked project: protection, retention, key, pending rotation, number of versions and last push.
+
+```bash
+gitgone env list
+```
+
+## `env create`
+
+```bash
+gitgone env create NAME [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `NAME` | Environment name. **Required.** | — |
+| `--protected` | Only maintainers can push to it. | `false` |
+| `--retention <count>` | Number of versions to keep, or `off`. | `off` |
+
+**Example**
+
+```bash
+gitgone env create production --protected --retention 20
+```
+
+## `env protect` / `env unprotect`
+
+Only maintainers can push to a protected environment.
+
+```bash
+gitgone env protect NAME
+gitgone env unprotect NAME
+```
+
+## `env retention`
+
+Keeps only the last versions of an environment, or every version with `off`.
+
+```bash
+gitgone env retention NAME COUNT
+```
+
+**Example**
+
+```bash
+gitgone env retention staging 10
+```
+
+## `env rotate`
+
+Gives the environment a new key, or its first key of its own, and re-encrypts its history on your machine.
+
+```bash
+gitgone env rotate NAME
+```
+
+## `key share`
+
+Gives the key to the members who have a role but not the key yet. The first time you share with someone, the CLI shows their key fingerprint and asks you to confirm it (see [Trusting your teammates' keys](/docs/cli/concepts#trusting-your-teammates-keys)).
+
+```bash
+gitgone key share [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `-e, --env <name>` | Share the key of an environment that has its own. | project key |
+| `-y, --yes` | Share without asking. Fingerprints are still confirmed. | `false` |
+
+## `key fingerprint`
+
+Shows the fingerprint of your public key, for your teammates to check.
+
+```bash
+gitgone key fingerprint
+```
+
+## `key forget`
+
+Forgets the trusted fingerprint of a user, after their account was reset. Check their new fingerprint with them before sharing again.
+
+```bash
+gitgone key forget EMAIL
+```
+
+## `token list`
+
+Lists the tokens of the linked project. Legacy tokens are flagged and should be recreated.
+
+```bash
+gitgone token list
+```
+
+## `token create`
+
+Creates a token limited to one environment, in the form `v2.<id>.<secret>`. The secret is generated on your machine and only shown once. Use it as `GITGONE_TOKEN` in your pipelines ([Use GitGone in CI](/docs/cli/guides/ci)).
+
+```bash
+gitgone token create NAME [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `NAME` | Token name, e.g. `CI_PROD`. **Required.** | — |
+| `-e, --env <name>` | Environment the token can read. | from `.gitgone`, then asked |
+
+**Example**
+
+```bash
+gitgone token create CI_PROD -e production
+```
+
+## `token revoke`
+
+```bash
+gitgone token revoke ID
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `ID` | Token id, from `gitgone token list`. **Required.** | — |
+| `-y, --yes` | Revoke without asking. | `false` |

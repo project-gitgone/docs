@@ -1,0 +1,53 @@
+---
+title: Remove a teammate
+description: Revoke access and make sure the keys they knew are replaced.
+---
+
+A teammate who leaves may still know the keys of the projects they had access to. Removing their role is not enough: the keys must be replaced and the secrets re-encrypted. The CLI does it in the same command.
+
+<Steps>
+<Step>
+### Remove them
+
+From a team you manage:
+
+```bash
+gitgone team remove ada@example.com --team backend
+```
+
+Or, for a role given on a single project:
+
+```bash
+gitgone access revoke ada@example.com
+```
+</Step>
+
+<Step>
+### Let the CLI rotate the keys
+
+The server returns the projects and environments whose keys they knew. The CLI asks for your vault password, then generates new keys, re-encrypts the whole history on your machine and shares the new keys with the remaining members.
+
+If a rotation fails, the CLI lists what is left. Rotate it by hand:
+
+```bash
+gitgone project rotate-key
+gitgone env rotate production
+```
+</Step>
+
+<Step>
+### Recreate the tokens
+
+Tokens are tied to the old keys and are revoked by the rotation. Recreate the ones your pipelines and servers use:
+
+```bash
+gitgone token create CI_PROD -e production
+```
+</Step>
+
+<Step>
+### Rotate the secrets themselves
+
+New keys protect future reads, but your former teammate may have copied the values. Change the sensitive ones (API keys, database passwords) at their source, then `gitgone push`.
+</Step>
+</Steps>

@@ -1,0 +1,40 @@
+---
+title: Run without a .env file
+description: Give your app its secrets at startup, without writing them to disk.
+---
+
+A `.env` file can be copied, committed by mistake or read by any process on your machine. `gitgone run` passes the secrets directly to your command instead.
+
+<Steps>
+<Step>
+### Run your app
+
+```bash
+gitgone run -- npm start
+gitgone run -e staging -- node server.js
+```
+
+Put your command after `--`. The CLI exits with its exit code, so it works in scripts and process managers.
+</Step>
+
+<Step>
+### Know where the values come from
+
+- If the project allows `pull` and a `.env` exists in the folder, its values are used.
+- Otherwise the secrets are downloaded and decrypted in memory, for the environment given by `-e` or saved by `gitgone init`.
+</Step>
+
+<Step>
+### Make it the rule (optional)
+
+```bash
+gitgone project policy memory-only
+```
+
+`gitgone pull` is then refused for this project: secrets are only available through `gitgone run`. Go back with `gitgone project policy standard`.
+</Step>
+</Steps>
+
+<Callout type="info">
+  The policy is a guardrail for well-behaved clients, not a security boundary: anyone who can decrypt the secrets can still write them somewhere.
+</Callout>

@@ -1,55 +1,69 @@
 ---
-title: Core Concepts
-description: A simple guide to how GitGone organizes your secrets.
+title: Core concepts
+description: How a GitGone server organizes users, projects and secrets.
 ---
 
-# Core Concepts
-
-To make the most of GitGone, it helps to understand how your data is organized. Here is the hierarchy:
-
 <Files>
-  <Folder name="Team (Organization)" defaultOpen>
-    <Folder name="Team Members">
-      <File name="Admin (SuperAdmin)" />
-      <File name="Member" />
-    </Folder>
-    <Folder name="Project (Your App)" defaultOpen>
-      <Folder name="development">
-        <File name="Snapshot v1" />
-        <File name="Snapshot v2" />
-      </Folder>
-      <Folder name="production">
-        <File name="Snapshot v1" />
+  <Folder name="Instance (your server)" defaultOpen>
+    <Folder name="Users, each with an instance role" />
+    <Folder name="Team: Backend" defaultOpen>
+      <Folder name="Members, each with a team role" />
+      <Folder name="Project: api" defaultOpen>
+        <Folder name="development">
+          <File name="v1, v2, v3…" />
+        </Folder>
+        <Folder name="production (protected)">
+          <File name="v1, v2…" />
+        </Folder>
       </Folder>
     </Folder>
   </Folder>
 </Files>
 
-<Tabs items={['👥 Teams', '📁 Projects', '🔐 Secrets', '🏗️ Environments']}>
-  <Tab value="👥 Teams">
-    A **Team** (or Workspace) is your main organizational unit. Usually, a team represents your entire company or a specific group of developers.
+## Instance
 
-    - You can be a member of multiple teams.
-    - Each team has its own members and its own projects.
-    - **Admins** can manage team membership and system-wide settings.
-  </Tab>
-  <Tab value="📁 Projects">
-    Inside your team, you'll create **Projects**. A project usually corresponds to a single application, a microservice, or a specific infrastructure component.
-    
-    - Secrets are scoped to a project.
-    - Access is managed at the project level.
-  </Tab>
-  <Tab value="🔐 Secrets">
-    A **Secret** is a versioned collection of environment variables (like in a `.env` file). 
-    
-    <Callout type="info">
-      GitGone doesn't just store "keys"; it stores **Snapshots**. Every time you push, a new version is created, allowing you to track history and roll back if needed.
-    </Callout>
-  </Tab>
-  <Tab value="🏗️ Environments">
-    Projects have different **Environments** (e.g., `development`, `staging`, `production`). 
-    
-    - You can have different secret values for each environment.
-    - GitGone ensures your app only pulls the values for the environment you specify.
-  </Tab>
-</Tabs>
+One GitGone server, self-hosted or deployed by GitGone Cloud. Every user has one **instance role**: Owner, Admin or Member (see [Administration](/docs/server/administration#instance-roles)).
+
+## Teams
+
+A team groups people and projects, usually a product or a department. Each member has a **team role**, which applies to every project of the team. The person who creates a team becomes its Maintainer.
+
+## Projects
+
+A project is one application or service: the secrets of a folder linked with `gitgone init`. A project belongs to a team. Users outside the team can be given a **project role** on that project only (`gitgone access grant`).
+
+## Environments
+
+Each project has environments, such as `development`, `staging` and `production`, with their own secrets.
+
+- **Protected** environments can only be pushed by maintainers (`gitgone env protect`).
+- **Retention** limits the number of versions kept (`gitgone env retention`).
+- An environment can have **a key of its own**, shared only with the people who can read it (`gitgone env rotate`). Otherwise it uses the key of the project.
+
+## Versions
+
+Every `gitgone push` creates a new, encrypted version of the whole environment. Versions are never modified: a rollback creates a new version with the content of an old one.
+
+## Roles
+
+Team and project roles decide what someone can do, down to the environment:
+
+| Role | Unprotected environments | Protected environments | Manage the team or project |
+|---|---|---|---|
+| Maintainer | read, push, roll back | read, push, roll back | yes |
+| Developer | read, push, roll back | read | no |
+| Viewer | read | — | no |
+
+[Custom roles](/docs/cli/guides/custom-roles) can grant any set of permissions, on all environments, the unprotected ones, or a list.
+
+## Keys
+
+Secrets are encrypted with the key of their project or environment. That key is stored on the server, encrypted separately for every member with their public key. Giving someone a role lets the server check their actions; sharing the key (`gitgone key share`) is what lets them decrypt. See [Architecture & Security](/docs/architecture).
+
+## Tokens
+
+A token reads the secrets of one environment, for a pipeline or a server, without a user account (`gitgone token create`). See [Use GitGone in CI](/docs/cli/guides/ci).
+
+## Audit log
+
+Every sensitive action is recorded with its author, its project and environment. Read it with `gitgone audit`.

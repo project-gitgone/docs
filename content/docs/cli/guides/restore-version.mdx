@@ -1,0 +1,38 @@
+---
+title: Restore a previous version
+description: Find the version you need and roll back in one command.
+---
+
+Every `gitgone push` creates a new version of the environment. Nothing is overwritten, so you can always go back.
+
+<Steps>
+<Step>
+### Find the version
+
+```bash
+gitgone history -e production
+```
+
+Each version shows its number, date and author.
+</Step>
+
+<Step>
+### Restore it
+
+```bash
+gitgone rollback -e production --to 4
+```
+
+Without `--to`, pick the version in a list. The CLI asks for confirmation, then your vault password.
+</Step>
+
+<Step>
+### Check the result
+
+The restored content becomes a **new** version (for example v8, restored from v4), so the history stays complete. Your local `.env` is updated at the same time, and your teammates get it with `gitgone pull`.
+</Step>
+</Steps>
+
+<Callout type="info">
+  An environment with a retention limit only keeps its last versions (`gitgone env retention production 20`). Older ones can no longer be restored.
+</Callout>

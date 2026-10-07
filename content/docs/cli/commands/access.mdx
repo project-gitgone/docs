@@ -1,0 +1,163 @@
+---
+title: Access
+description: Who can read and write the secrets, and what they did.
+---
+
+Removing a role or a member also rotates the keys they knew: the CLI asks for your vault password and re-encrypts the affected secrets (see [Remove a teammate](/docs/cli/guides/remove-teammate)).
+
+## `access list`
+
+Lists who can access the linked project, with their role and whether it comes from a team or from the project.
+
+```bash
+gitgone access list
+```
+
+## `access grant`
+
+Gives a role on the linked project to a user.
+
+```bash
+gitgone access grant [EMAIL] [ROLE]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `EMAIL` | User email. | asked |
+| `ROLE` | Role name or key. | asked |
+
+**Example**
+
+```bash
+gitgone access grant ada@example.com developer
+```
+
+## `access revoke`
+
+Removes the project role of a user. Team roles are changed with `gitgone team`.
+
+```bash
+gitgone access revoke [EMAIL]
+```
+
+## `team list`
+
+Lists your teams and your role in each.
+
+```bash
+gitgone team list
+```
+
+## `team create`
+
+```bash
+gitgone team create [NAME]
+```
+
+## `team members`
+
+```bash
+gitgone team members [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `--team <team>` | Team, by name or id. | your team if you have one, else asked |
+
+## `team add`
+
+```bash
+gitgone team add [EMAIL] [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `EMAIL` | Email of the user to add. | asked |
+| `--team <team>` | Team, by name or id. | your team if you have one, else asked |
+| `--role <role>` | Role name or key. | asked |
+
+**Example**
+
+```bash
+gitgone team add ada@example.com --team backend --role developer
+```
+
+## `team role`
+
+Changes the role of a member, in a team you manage.
+
+```bash
+gitgone team role [EMAIL] [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `EMAIL` | Member email. | asked |
+| `--team <team>` | Team, by name or id. | asked among the teams you manage |
+| `--role <role>` | Role name or key. | asked |
+
+## `team remove`
+
+Removes a member from a team you manage, then rotates the keys of the team's projects.
+
+```bash
+gitgone team remove [EMAIL] [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `EMAIL` | Member email. | asked |
+| `--team <team>` | Team, by name or id. | asked among the teams you manage |
+| `-y, --yes` | Remove without asking. | `false` |
+
+## `role list`
+
+Lists the roles, their scope and their number of permissions.
+
+```bash
+gitgone role list
+```
+
+## `role show`
+
+Shows the permissions of a role, and the environments they apply to.
+
+```bash
+gitgone role show ROLE
+```
+
+## `role create`
+
+Creates a custom role, step by step: name, description, scope (teams and projects, or the instance), permissions, and for each environment permission the environments it applies to (all, unprotected only, or a list).
+
+```bash
+gitgone role create [NAME]
+```
+
+## `role delete`
+
+Deletes a custom role. Default roles cannot be deleted.
+
+```bash
+gitgone role delete ROLE
+```
+
+## `audit`
+
+Shows who did what on the linked project, or on the whole instance.
+
+```bash
+gitgone audit [OPTIONS]
+```
+
+| Option | Description | Default |
+|---|---|---|
+| `--all` | The whole instance. Needs the `instance.audit.read` permission. | linked project |
+| `--action <action>` | Only this action, e.g. `secrets.pull`. | all actions |
+| `--limit <count>` | Number of events. | `50` |
+
+**Example**
+
+```bash
+gitgone audit --action secrets.pull --limit 20
+```

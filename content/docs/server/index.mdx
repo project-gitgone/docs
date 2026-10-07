@@ -1,31 +1,39 @@
 ---
 title: Introduction
-description: Learn how GitGone helps you protect your team's secrets.
+description: What the GitGone server does, and what you need to run it.
 ---
 
-# Welcome to GitGone Server 👋
+The GitGone server is the API your team's CLIs talk to. It stores the encrypted secrets, the users, teams and roles, and the audit log. It is open source under the MIT license and ships as a Docker image.
 
-You've decided to take control of your configuration secrets—like API keys and database passwords—and that's a fantastic move! 
+## What the server knows, and what it doesn't
 
-The GitGone server is the heart of your very own secret management system. It’s a dedicated API server designed to be the single source of truth for your team's encrypted configurations.
+| The server stores | The server never has |
+|---|---|
+| Encrypted versions of your secrets | Any secret value |
+| Project and environment keys, encrypted for each member | A usable project or environment key |
+| Each user's private key, inside a vault encrypted with a key derived from their password | Passwords, or the key that opens a vault |
+| Users, teams, roles and who has access to what | |
+| The audit log | |
 
-## What is GitGone Server?
+Every action is checked by the server against the roles of the user, down to the environment. Encryption and decryption only happen in the CLI. See [Architecture & Security](/docs/architecture).
 
-Think of it as a **secure digital vault** for your team. The server acts as a trusted guardian:
-- **Encrypted Storage**: It holds onto your data but never sees it in plain text.
-- **Access Control**: It manages who can see or edit secrets for specific projects.
-- **Version History**: It keeps track of every change, allowing you to roll back instantly if something goes wrong.
+## What runs
 
-### Why self-host?
+- **The server** (`ghcr.io/project-gitgone/server`), a Node.js API listening on port `3333`.
+- **PostgreSQL**, its only dependency.
 
-- **Total Privacy**: Your secrets never leave your infrastructure.
-- **No Third-Party Risk**: You aren't dependent on a SaaS provider's security or pricing.
-- **Control**: You own the database, the logs, and the access rules.
+There is no web dashboard on a self-hosted server: everything is done with the [CLI](/docs/cli). GitGone Cloud adds a web console on top of the same server.
 
-## Architecture
+## Requirements
 
-GitGone relies on a **Zero-Trust** architecture where the server never has access to the decryption keys. All encryption happens client-side (in the CLI).
+- A machine with **Docker** and Docker Compose.
+- A **domain name and HTTPS** if your team reaches it over the internet. See [Domain and HTTPS](/docs/server/domain).
 
-For a deep dive into the cryptography and security model, check out the [Architecture & Security](/docs/architecture) page.
+## Next steps
 
-Ready to deploy? Let's [set up your instance!](./server/setup)
+<Cards>
+  <Card icon={<Rocket />} title="Install with Docker" description="Run your server in about five minutes." href="/docs/server/setup" />
+  <Card icon={<Globe />} title="Domain and HTTPS" description="Put the server behind a reverse proxy." href="/docs/server/domain" />
+  <Card icon={<Settings />} title="Configuration" description="Every environment variable of the server." href="/docs/server/configuration" />
+  <Card icon={<Users />} title="Administration" description="First administrator, users and instance roles." href="/docs/server/administration" />
+</Cards>

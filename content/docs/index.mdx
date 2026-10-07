@@ -1,69 +1,34 @@
 ---
 title: Welcome to GitGone
-description: The simple and secure way to manage your team's secrets.
+description: Share your team's secrets, encrypted end to end.
 ---
 
-# Welcome to GitGone! 👋
+GitGone keeps your environment variables (API keys, database passwords, payment keys) in one place for your whole team. Everything is encrypted on your machine before it is sent: the server only stores encrypted data and can never read a value.
 
-GitGone is a modern, developer-friendly tool designed to keep your application secrets (like API keys and passwords) safe, organized, and synced across your team.
+## How it fits together
 
-Whether you're looking to set up your own server or just want to learn how to use the CLI, you've come to the right place.
+| Part | Role |
+|---|---|
+| **Server** | Stores the encrypted secrets, the users, teams and roles, and the audit log. Open source, runs with Docker. |
+| **CLI** | Encrypts, sends and gets your secrets from the terminal. It is where all the encryption happens. |
+| **GitGone Cloud** | Hosts a private server for your organization, with a web console, billing and support. |
 
-<Cards>
-  <Card 
-    icon={<Server />}
-    title="GitGone Server" 
-    description="Learn how to host your own secure vault using Docker in minutes." 
-    href="/docs/server" 
-  />
-  <Card 
-    icon={<Terminal />}
-    title="GitGone CLI" 
-    description="Install the command-line tool and start managing your secrets like a pro." 
-    href="/docs/cli" 
-  />
-</Cards>
+You use the same CLI and the same server whether you self-host or use GitGone Cloud.
 
-## Why developers love GitGone?
+## Where to start
 
 <Cards>
-  <Card 
-    icon={<Shield />}
-    title="Privacy First" 
-    description="Your secrets are encrypted locally before they even touch the network." 
-  />
-  <Card 
-    icon={<Zap />}
-    title="Blazing Fast" 
-    description="Push, pull, and run your apps with secrets instantly loaded." 
-  />
+  <Card icon={<Rocket />} title="Quickstart" description="From nothing to your first shared secret, in about ten minutes." href="/docs/quickstart" />
+  <Card icon={<Terminal />} title="CLI" description="Install the CLI, learn the key concepts and every command." href="/docs/cli" />
+  <Card icon={<Server />} title="Server" description="Install, configure and maintain your own server." href="/docs/server" />
+  <Card icon={<Shield />} title="Security" description="How encryption, key sharing and rotation work." href="/docs/architecture" />
 </Cards>
 
-## Quick Navigation
+## What you get
 
-
-
-Need something specific? Here are some quick links:
-
-
-
-- **[Architecture & Security](/docs/architecture)**: Deep dive into our Zero-Trust and E2EE model.
-
-- **[Development Workflow](/docs/workflow)**: Best practices for team collaboration.
-
-- **[CLI Commands](/docs/cli/commands)**: A handy cheat sheet for all the essential commands.
-
-- **[Self-Hosting](/docs/server/setup)**: The direct guide to running your own instance.
-
-
-
-
----
-
-
-
-<Callout type="info">
-
-  **New to GitGone?** We recommend reading the [Architecture Overview](/docs/architecture) to understand how we protect your data.
-
-</Callout>
+- **End-to-end encryption**: secrets are encrypted with keys the server never has.
+- **Access down to the environment**: roles decide who can read or push each environment, and production can be protected.
+- **History and rollback**: every push is a new version you can restore.
+- **Clean departures**: removing someone rotates the keys they knew.
+- **CI ready**: tokens limited to one environment let your pipelines read their secrets.
+- **Audit log**: who pulled, pushed or shared what, and when.

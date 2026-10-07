@@ -1,0 +1,45 @@
+---
+title: Create a custom role
+description: Build a role with exactly the permissions a person needs.
+---
+
+The default roles (Maintainer, Developer, Viewer) cover most teams. When they don't, create your own.
+
+<Steps>
+<Step>
+### Look at an existing role
+
+```bash
+gitgone role list
+gitgone role show developer
+```
+
+`role show` lists each permission and the environments it applies to.
+</Step>
+
+<Step>
+### Create the role
+
+```bash
+gitgone role create "QA writer"
+```
+
+The CLI asks, step by step:
+
+1. a description (optional);
+2. where the role is given: **teams and projects**, or **the instance**;
+3. the permissions;
+4. for each environment permission (`env.read`, `env.write`…), the environments it applies to: **all**, **unprotected only**, or **a list** of names.
+</Step>
+
+<Step>
+### Give it to someone
+
+```bash
+gitgone team add ada@example.com --team backend --role "QA writer"
+gitgone access grant ada@example.com "QA writer"
+```
+</Step>
+</Steps>
+
+To remove a custom role, run `gitgone role delete <role>`. Default roles cannot be deleted.

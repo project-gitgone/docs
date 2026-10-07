@@ -1,37 +1,61 @@
 ---
-title: Development Workflow
-description: Best practices for using GitGone in a collaborative environment.
+title: Daily workflow
+description: How a team works with GitGone, day to day.
 ---
 
-# Development Workflow
+GitGone treats secrets a bit like code: everyone works from the same shared version, changes are pushed, and every version is kept. Without ever committing a secret to Git.
 
-Managing secrets in a team can be chaotic. GitGone streamlines this by treating secrets with the same rigor as source code, but without the security risk of committing them to Git.
+## The loop
 
-## The Loop
+<Steps>
+<Step>
+### Get the latest secrets
 
-The standard development loop with GitGone mirrors your git workflow:
-
-### 1. Pull (Sync)
-Before starting work, ensure you have the latest config.
 ```bash
 gitgone pull
 ```
-This fetches the latest encrypted snapshot from the server and injects it into your local environment or creates a local `.env` file (if configured).
 
-### 2. Modify
-Need to add a new API key? Just add it to your local `.env` file as you normally would.
-```
-STRIPE_KEY=sk_test_12345
-```
-GitGone doesn't force you to use CLI commands for every single variable change; it respects your existing development habits.
+Your `.env` is updated with the latest version of the environment of the folder. If it differs from yours, the CLI shows which variables would change before overwriting it.
+</Step>
 
-### 3. Push (Share)
-When your feature works and you're ready to share the config with the team:
+<Step>
+### Change what you need
+
+Edit `.env` as usual: add a key, change a URL. GitGone does not change your habits.
+</Step>
+
+<Step>
+### Share it
+
 ```bash
 gitgone push
 ```
-This creates a new immutable version of the secrets and uploads it. Your teammates can now `pull` it.
+
+The CLI lists the variables you added, changed or removed, then sends a new encrypted version. Your teammates get it with `gitgone pull`.
+</Step>
+</Steps>
+
+<Callout type="info">
+  Prefer not to keep a `.env` on disk? Run your app with `gitgone run -- npm start`: the secrets are passed to it directly. See [Run without a .env file](/docs/cli/guides/run-without-env).
+</Callout>
 
 ## Environments
 
-GitGone supports multiple environments (e.g., `development`, `staging`, `production`) within a single project.
+A project usually has `development`, `staging` and `production`. Each folder has a default environment, chosen with `gitgone init`. Use another one with `-e`:
+
+```bash
+gitgone pull -e staging
+gitgone run -e production -- node server.js
+```
+
+Protect `production` so that only maintainers can push to it: see [Protect production](/docs/cli/guides/protect-production).
+
+## When something goes wrong
+
+- **A bad push?** Restore the previous version with `gitgone rollback`. See [Restore a previous version](/docs/cli/guides/restore-version).
+- **Who changed it?** `gitgone history` lists the versions and their authors, `gitgone audit` every action.
+- **Someone leaves?** Remove them: the keys they knew are rotated. See [Remove a teammate](/docs/cli/guides/remove-teammate).
+
+## New teammates
+
+A newcomer needs an account, a role, and the key. Then `gitgone init` and `gitgone pull` in the repository are enough. See [Onboard a teammate](/docs/cli/guides/onboard-teammate).
