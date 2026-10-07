@@ -1,5 +1,11 @@
 # @project-gitgone/docs
 
+## 26.2.10
+
+### Patch Changes
+
+- [`a9ad4dd`](https://github.com/project-gitgone/docs/commit/a9ad4dd90bfae2d4cb05889918d778533b63f94d) Thanks [@Asuniia](https://github.com/Asuniia)! - The documentation loads the self-hosted Umami analytics (no cookie) when it is configured, measures the clicks on Get started and Install the CLI, and describes its pages with structured data. The "edit on GitHub" link of each page points to the right file.
+
 ## 26.2.9
 
 ### Patch Changes
