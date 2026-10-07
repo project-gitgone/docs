@@ -2,5 +2,13 @@
   "title": "CLI",
   "icon": "Terminal",
   "root": true,
-  "pages": ["index", "setup", "concepts", "guides", "commands", "troubleshooting", "migration"]
+  "pages": [
+    "index",
+    "setup",
+    "concepts",
+    "guides",
+    "commands",
+    "troubleshooting",
+    "migration"
+  ]
 }

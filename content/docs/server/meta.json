@@ -2,5 +2,13 @@
   "title": "Server",
   "icon": "Server",
   "root": true,
-  "pages": ["index", "setup", "domain", "configuration", "administration", "maintenance", "concepts"]
+  "pages": [
+    "index",
+    "setup",
+    "domain",
+    "configuration",
+    "administration",
+    "maintenance",
+    "concepts"
+  ]
 }
