@@ -175,7 +175,11 @@ const PATHS = [
     text: "Pull, push and run your secrets from the terminal, with a guided setup.",
     href: "/docs/cli",
     links: [
-      { label: "Install the CLI", href: "/docs/cli/setup" },
+      {
+        label: "Install the CLI",
+        href: "/docs/cli/setup",
+        event: "docs_install_cli",
+      },
       { label: "Key concepts", href: "/docs/cli/concepts" },
       { label: "Commands", href: "/docs/cli/commands" },
     ],
@@ -217,7 +221,12 @@ export function Documentation() {
             <ul className="mt-5 flex flex-col gap-2.5 border-t border-fd-border pt-5">
               {path.links.map((link) => (
                 <li key={link.href}>
-                  <TextLink href={link.href}>{link.label}</TextLink>
+                  <TextLink
+                    href={link.href}
+                    event={"event" in link ? link.event : undefined}
+                  >
+                    {link.label}
+                  </TextLink>
                 </li>
               ))}
             </ul>

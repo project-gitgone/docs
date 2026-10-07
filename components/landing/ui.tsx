@@ -45,13 +45,16 @@ export function IconTile({
 
 export function TextLink({
   href,
+  event,
   children,
 }: {
   href: string;
+  event?: string;
   children: ReactNode;
 }) {
   return (
     <Link
+      data-umami-event={event}
       href={href}
       className="group inline-flex items-center gap-1.5 text-sm font-medium text-fd-primary"
     >
@@ -66,6 +69,7 @@ export function CtaButtons({ center = false }: { center?: boolean }) {
     <div className={`flex flex-wrap gap-3 ${center ? "justify-center" : ""}`}>
       <Link
         href="/docs/quickstart"
+        data-umami-event="docs_get_started"
         className="inline-flex items-center gap-2 rounded-md bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
       >
         Get started
