@@ -13,6 +13,8 @@ The GitGone CLI is organized into logical groups to help you manage your secrets
 <Accordion title="gitgone login">
   Authenticate your CLI with your GitGone server. You will be prompted for your email and password directly in your terminal. Your password never leaves your machine: the CLI derives an authentication key from it.
 
+  On a GitGone Cloud instance, the CLI opens your browser to sign in with your cloud account instead (use `--password` to force a password login). On a new self-hosted server that has no administrator yet, it creates the administrator account.
+
   Accounts created before this protocol are upgraded automatically on their next login.
 </Accordion>
 <Accordion title="gitgone activate">
@@ -183,10 +185,6 @@ GitGone uses end-to-end encryption. These commands help manage the keys that pro
 Commands reserved for server administrators (SuperAdmins).
 
 <Accordions>
-<Accordion title="gitgone admin setup">
-  The very first command to run after setting up a new server. It creates the SuperAdmin account and generates the master keys.
-</Accordion>
-
 <Accordion title="gitgone admin users">
   Manage users globally on the server.
   - `gitgone admin users list`: List all registered users.
